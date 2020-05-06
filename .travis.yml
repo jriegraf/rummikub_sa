@@ -1,0 +1,12 @@
+language: scala
+scala:
+  - 2.12.2
+notifications:
+  email:
+    recipients:
+      - julianriegraf@web.de
+      - pa.toth87@gmail.com
+jdk:
+  - openjdk8
+script: "sbt clean coverage test"
+after_success: "sbt coverageReport coveralls"
