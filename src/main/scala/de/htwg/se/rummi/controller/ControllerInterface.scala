@@ -1,7 +1,8 @@
 package de.htwg.se.rummi.controller
 
 import de.htwg.se.rummi.controller.GameState.GameState
-import de.htwg.se.rummi.model.{Game, Grid, Player, Tile}
+import de.htwg.se.rummi.controller.controllerBaseImpl.GameController
+import de.htwg.se.rummi.model.{Grid, Player, Tile}
 
 import scala.swing.Publisher
 
@@ -16,7 +17,7 @@ trait ControllerInterface extends Publisher {
 
   def activePlayer: Player
 
-  def game: Game
+  def game: GameController
 
   def rackOfActivePlayer: Grid
 

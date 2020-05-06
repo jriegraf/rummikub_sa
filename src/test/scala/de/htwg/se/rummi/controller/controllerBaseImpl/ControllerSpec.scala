@@ -139,7 +139,7 @@ class ControllerSpec extends WordSpec with Matchers {
       val tile = controller.game.coveredTiles(0)
       var rack = controller.getRack(controller.activePlayer)
       rack.tiles.values.toList.contains(tile) shouldBe false
-      controller.draw()
+      controller.draw
       rack = controller.getRack(controller.activePlayer)
       rack.tiles.values.toList.contains(tile) shouldBe true
     }
@@ -147,10 +147,10 @@ class ControllerSpec extends WordSpec with Matchers {
     "throw exception if rack is full" in {
       for(_ <- 0 to (2*13*4) - (2*14+1))
         {
-          controller.draw()
+          controller.draw
           controller.switchPlayer()
         }
-      a[NoSuchElementException] should be thrownBy controller.draw()
+      a[NoSuchElementException] should be thrownBy controller.draw
     }
 
     "can sort tiles by color and number" in {
@@ -170,7 +170,7 @@ class ControllerSpec extends WordSpec with Matchers {
           ((1, 3) -> y1)
       ))
 
-      controller.sortRack()
+      controller.sortRack
       val rack = controller.getRack(controller.activePlayer)
       rack.tiles shouldBe Map.empty +
         ((1, 1) -> r1) +

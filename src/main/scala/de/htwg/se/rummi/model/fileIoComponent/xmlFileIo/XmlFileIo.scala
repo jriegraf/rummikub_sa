@@ -1,14 +1,14 @@
 package de.htwg.se.rummi.model.fileIoComponent.xmlFileIo
 
-import de.htwg.se.rummi.model.Game
+import de.htwg.se.rummi.controller.controllerBaseImpl.GameController
 import de.htwg.se.rummi.model.fileIoComponent.FileIoInterface
 
 import scala.xml.PrettyPrinter
 
 class XmlFileIo extends FileIoInterface{
-  override def load: Game = ???
+  override def load: GameController = ???
 
-  override def save(game: Game): String = {
+  override def save(game: GameController): String = {
     import java.io._
     val pw = new PrintWriter(new File("grid.xml"))
     val prettyPrinter = new PrettyPrinter(120, 4)
@@ -18,7 +18,7 @@ class XmlFileIo extends FileIoInterface{
     xml
   }
 
-  def gameToXml(game: Game) = {
+  def gameToXml(game: GameController) = {
     game toXml
   }
 }

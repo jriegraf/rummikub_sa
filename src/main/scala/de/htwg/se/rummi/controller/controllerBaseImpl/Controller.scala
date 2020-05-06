@@ -22,7 +22,7 @@ class Controller @Inject()() extends ControllerInterface {
   val injector: Injector = Guice.createInjector(new RummiModule)
   val fileIo: FileIoInterface = injector.getInstance(classOf[FileIoInterface])
 
-  var game: Game = Game(Nil)
+  var game: GameController = GameController(Nil)
 
   def initGame: Unit = {
     val players = game.playerNames
@@ -40,7 +40,7 @@ class Controller @Inject()() extends ControllerInterface {
       p.points = 0
     })
 
-    game = Game(playerNames)
+    game = GameController(playerNames)
     publish(new GameStateChanged)
     publish(new PlayerSwitchedEvent)
   }

@@ -2,7 +2,8 @@ package de.htwg.se.rummi.model
 
 case class Grid(ROWS: Int, COLS: Int, tiles: Map[(Int, Int), Tile]) {
 
-  tiles.keys.find(x => x._1 > ROWS || x._2 > COLS)
+  tiles.keys
+    .find(x => x._1 > ROWS || x._2 > COLS)
     .map(x => throw new IllegalArgumentException("Tile indices '" + x + "' out of bounds."))
 
   def getTileAt(row: Int, col: Int): Option[Tile] = {
@@ -11,7 +12,7 @@ case class Grid(ROWS: Int, COLS: Int, tiles: Map[(Int, Int), Tile]) {
 
   def getFreeField(): Option[(Int, Int)] = {
     for (i <- 1 to ROWS; j <- 1 to COLS) {
-      if (tiles.get((i, j)).isEmpty) {
+      if (getTileAt(i, j).isEmpty) {
         return Some(((i, j)))
       }
     }

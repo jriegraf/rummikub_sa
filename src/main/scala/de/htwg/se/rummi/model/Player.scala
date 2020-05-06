@@ -1,5 +1,6 @@
 package de.htwg.se.rummi.model
 
+import de.htwg.se.rummi.controller.controllerBaseImpl.GameController
 import play.api.libs.json.{JsObject, Json}
 
 case class Player(name: String, var inFirstRound: Boolean = true, var points: Int = 0) {
@@ -20,6 +21,6 @@ case class Player(name: String, var inFirstRound: Boolean = true, var points: In
     )
   }
 
-  implicit val playerWrites = Json.writes[Game]
+  implicit val playerWrites = Json.writes[GameController]
   implicit val playerReads = Json.reads[Player]
 }

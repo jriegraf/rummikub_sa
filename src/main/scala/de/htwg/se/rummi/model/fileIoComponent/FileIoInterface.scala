@@ -1,10 +1,10 @@
 package de.htwg.se.rummi.model.fileIoComponent
 
-import de.htwg.se.rummi.model.Game
+import de.htwg.se.rummi.controller.controllerBaseImpl.GameController
 
 trait FileIoInterface {
 
-  def load: Game
-  def save(game: Game) : String
+  def load: GameController
+  def save(game: GameController) : String
 
 }

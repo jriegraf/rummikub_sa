@@ -1,11 +1,12 @@
-package de.htwg.se.rummi.model
+package de.htwg.se.rummi.controller.controllerBaseImpl
 
 import de.htwg.se.rummi.Const
+import de.htwg.se.rummi.model._
 import play.api.libs.json.{JsArray, JsValue, Json, Writes}
 
 import scala.collection.mutable
 
-case class Game(playerNames: List[String]) {
+case class GameController(playerNames: List[String]) {
 
 
   // Jeder Spieler bewahrt seine Steine in seinem Rack auf
@@ -113,12 +114,12 @@ case class Game(playerNames: List[String]) {
   }
 }
 
-object Game {
+object GameController {
 
   import play.api.libs.json.Json
 
-  implicit val gameWrites = new Writes[Game] {
-    override def writes(o: Game): JsValue = {
+  implicit val gameWrites = new Writes[GameController] {
+    override def writes(o: GameController): JsValue = {
       Json.obj(
         "players" -> JsArray(o.players.map(p => p.toJson)),
         "racks" -> o.racksToJson(),
@@ -129,5 +130,5 @@ object Game {
       )
     }
   }
-  implicit val gameReads = Json.reads[Game]
+  implicit val gameReads = Json.reads[GameController]
 }
