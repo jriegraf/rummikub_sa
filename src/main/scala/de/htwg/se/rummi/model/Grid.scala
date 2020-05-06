@@ -1,7 +1,5 @@
 package de.htwg.se.rummi.model
 
-import play.api.libs.json.{JsNumber, JsObject, Json}
-
 case class Grid(ROWS: Int, COLS: Int, tiles: Map[(Int, Int), Tile]) {
 
   tiles.keys.find(x => x._1 > ROWS || x._2 > COLS)

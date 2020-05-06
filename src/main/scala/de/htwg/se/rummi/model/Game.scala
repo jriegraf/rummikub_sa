@@ -1,13 +1,15 @@
 package de.htwg.se.rummi.model
 
 import de.htwg.se.rummi.Const
-import play.api.libs.json.{JsArray, JsObject, JsValue, Json, Writes}
+import play.api.libs.json.{JsArray, JsValue, Json, Writes}
+
+import scala.collection.mutable
 
 case class Game(playerNames: List[String]) {
 
 
   // Jeder Spieler bewahrt seine Steine in seinem Rack auf
-  var racks: Map[Player, Grid] = Map.empty
+  val racks = new mutable.HashMap[Player, Grid]()
 
   // Verdeckte Steine
   var coveredTiles: List[Tile] = Nil
@@ -26,7 +28,7 @@ case class Game(playerNames: List[String]) {
 
     grid = Grid(Const.GRID_ROWS, Const.GRID_COLS, Map.empty)
     coveredTiles = Nil
-    racks = Map.empty
+    racks.empty
 
     for (i <- Const.LOWEST_NUMBER to Const.HIGHEST_NUMBER) {
       coveredTiles = new Tile(i, RED) :: coveredTiles
@@ -43,7 +45,7 @@ case class Game(playerNames: List[String]) {
 
     coveredTiles = scala.util.Random.shuffle(coveredTiles)
 
-    for (p <- players) {
+    players.foreach(p => {
       // Take 14 tiles and add them to the rack of the player
       var tilesAddToRack = coveredTiles.take(Const.NUMBER_OF_INITIAL_RACK_TILES)
 
@@ -52,7 +54,8 @@ case class Game(playerNames: List[String]) {
 
       var map: Map[(Int, Int), Tile] = Map.empty
       var i, j = 1
-      while (!tilesAddToRack.isEmpty) {
+
+      while (tilesAddToRack.nonEmpty) {
         map = map + ((i, j) -> tilesAddToRack.head)
         tilesAddToRack = tilesAddToRack.drop(1)
         j += 1
@@ -61,15 +64,16 @@ case class Game(playerNames: List[String]) {
           i += 1
         }
       }
-      racks = racks + (p -> Grid(Const.RACK_ROWS, Const.RACK_COLS, map))
-    }
+      racks.+=(p -> Grid(Const.RACK_ROWS, Const.RACK_COLS, map))
+    })
   }
 
   def racksToXml = {
     racks.toList.map(tuple => {
       <rack>
-      <player>{tuple._1.name}</player>
-        {tuple._2.toXml}
+        <player>
+          {tuple._1.name}
+        </player>{tuple._2.toXml}
       </rack>
     })
   }
@@ -84,15 +88,27 @@ case class Game(playerNames: List[String]) {
       })
     )
   }
-  
-  def toXml()  = {
+
+  def toXml() = {
     <game>
-    <players>{ players.map(p => p.toXml)}</players>
-    <racks>{racksToXml}</racks>
-    <field>{grid.toXml}</field>
-    <activePlayerIndex>{activePlayerIndex}</activePlayerIndex>
-    <isValidField>{isValidField}</isValidField>
-    <coveredTiles>{coveredTiles.toStream.map(t => t.toXml)}</coveredTiles>
+      <players>
+        {players.map(p => p.toXml)}
+      </players>
+      <racks>
+        {racksToXml}
+      </racks>
+      <field>
+        {grid.toXml}
+      </field>
+      <activePlayerIndex>
+        {activePlayerIndex}
+      </activePlayerIndex>
+      <isValidField>
+        {isValidField}
+      </isValidField>
+      <coveredTiles>
+        {coveredTiles.toStream.map(t => t.toXml)}
+      </coveredTiles>
     </game>
   }
 }

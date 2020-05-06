@@ -2,7 +2,7 @@ package de.htwg.se.rummi.aview.swing
 
 import java.awt.Color
 
-import de.htwg.se.rummi.controller.controllerBaseImpl.{FieldChangedEvent, GameStateChanged, PlayerSwitchedEvent, ValidStateChangedEvent, WinEvent}
+import de.htwg.se.rummi.controller.controllerBaseImpl._
 import de.htwg.se.rummi.controller.{ControllerInterface, GameState}
 
 import scala.swing._
@@ -10,9 +10,9 @@ import scala.swing.event.ButtonClicked
 
 
 /**
-  *
-  * @param co
-  */
+ *
+ * @param co
+ */
 class SwingGui(co: ControllerInterface) extends MainFrame {
 
   listenTo(co)
@@ -23,6 +23,7 @@ class SwingGui(co: ControllerInterface) extends MainFrame {
   val finishButton = new Button("Finish") {
     enabled = false
   }
+
   listenTo(finishButton)
   val getTileButton = new Button("Get Tile")
   listenTo(getTileButton)
@@ -90,25 +91,26 @@ class SwingGui(co: ControllerInterface) extends MainFrame {
   reactions += {
     case ButtonClicked(b) => {
 
-      if (b.isInstanceOf[Field]) {
-        val clickedField: Field = b.asInstanceOf[Field]
-        fieldClicked(clickedField)
-      } else if (b == getTileButton) {
-        co.draw
-      } else if (b == finishButton) {
-        co.switchPlayer
-      } else if (b == quitMenuItem) {
-        sys.exit(0)
-      } else if (b == newGameMenuItem) {
-        co.initGame
-      } else if (b == saveMenuItem) {
-        co.save
-      } else if (b == sortButton) {
-        co.sortRack
-      } else if (b == undoButton) {
-        co.undo
-      } else if (b == redoButton) {
-        co.redo
+      b match {
+        case clickedField: Field =>
+          fieldClicked(clickedField)
+        case _ => if (b == getTileButton) {
+          co.draw
+        } else if (b == finishButton) {
+          co.switchPlayer
+        } else if (b == quitMenuItem) {
+          sys.exit(0)
+        } else if (b == newGameMenuItem) {
+          co.initGame
+        } else if (b == saveMenuItem) {
+          co.save
+        } else if (b == sortButton) {
+          co.sortRack
+        } else if (b == undoButton) {
+          co.undo
+        } else if (b == redoButton) {
+          co.redo
+        }
       }
     }
 
@@ -196,9 +198,7 @@ class SwingGui(co: ControllerInterface) extends MainFrame {
     }
   }
 
-  private def moveTile(clickedField: Field)
-
-  = {
+  private def moveTile(clickedField: Field) = {
     if (rack.containsField(selectedField.get) && field.containsField(clickedField)) {
       co.moveTile(co.rackOfActivePlayer, co.field, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
     }

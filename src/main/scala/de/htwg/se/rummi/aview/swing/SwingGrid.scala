@@ -53,30 +53,6 @@ class SwingGrid(val ROWS: Int, val COLS: Int) extends GridPanel(rows0 = ROWS, co
     }
   }
 
-  private def putTilesOnFields(set: RummiSet, fields: (Field, Field)) = {
-
-    var col = fields._1.col
-
-    for (i <- 0 to set.tiles.size - 1) {
-
-      val field = getField(fields._1.row, col) match {
-        case Some(f) => f
-        case None => throw new NoSuchElementException
-      }
-      field.setTile(set.tiles(i))
-
-      // Print red border
-      val lastTile: Int = set.tiles.size - 1
-
-      i match {
-        case 0 => field.border = Swing.MatteBorder(2, 2, 2, 0, Color.RED)
-        case `lastTile` => field.border = Swing.MatteBorder(2, 0, 2, 2, Color.RED)
-        case _ => field.border = Swing.MatteBorder(2, 0, 2, 0, Color.RED)
-      }
-      col += 1
-    }
-  }
-
   def displayGrid(grid: Grid): Unit = {
     fields.foreach(f => f.unsetTile())
     grid.tiles.foreach(x => {
@@ -88,11 +64,11 @@ class SwingGrid(val ROWS: Int, val COLS: Int) extends GridPanel(rows0 = ROWS, co
   }
 
   def isTileOnField(tile: Tile): Boolean = {
-    return fields.find(t => t.tileOpt.isDefined && t.tileOpt.get == tile).isDefined
+    fields.find(t => t.tileOpt.isDefined && t.tileOpt.get == tile).isDefined
   }
 
   def containsField(field: Field): Boolean = {
-    return fields.contains(field)
+    fields.contains(field)
   }
 
   def getField(x: Int, y: Int): Option[Field] = {

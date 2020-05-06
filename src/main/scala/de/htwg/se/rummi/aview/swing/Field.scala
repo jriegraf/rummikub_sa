@@ -9,10 +9,10 @@ import scala.swing.{Button, Swing}
 class Field(val row: Int, val col: Int) extends Button {
   var tileOpt = Option.empty[Tile]
   val WIDTH = 10
-  val HIGHT = 10
-  preferredSize = new swing.Dimension(WIDTH, HIGHT)
-  minimumSize = new swing.Dimension(WIDTH, HIGHT)
-  maximumSize = new swing.Dimension(WIDTH, HIGHT)
+  val HEIGHT = 10
+  preferredSize = new swing.Dimension(WIDTH, HEIGHT)
+  minimumSize = new swing.Dimension(WIDTH, HEIGHT)
+  maximumSize = new swing.Dimension(WIDTH, HEIGHT)
   unsetTile()
 
   def setTile(tile: Tile): Unit = {
@@ -25,6 +25,7 @@ class Field(val row: Int, val col: Int) extends Button {
       case BLUE => Color.decode("#add8e6")
       case RED => Color.decode("#ff0000")
       case WHITE => Color.decode("#000000")
+      case _ => Color.BLACK;
     }
 
     text = tile.joker match {

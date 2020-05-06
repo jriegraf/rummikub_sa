@@ -36,7 +36,7 @@ class RummiSetSpec extends WordSpec with Matchers {
     }
 
     "give the correct amount of points" in {
-      group4.getPoints() should be(3)
+      group4.getPoints should be(3)
     }
 
     "return true with 4 pieces and 2 joker" in {
@@ -124,7 +124,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         var list = g1 :: g2 :: g3 :: Nil
 
         val run1 = new RummiSet(list)
-        run1.getPoints() should be(6)
+        run1.getPoints should be(6)
       }
 
       "be return the correct number of points with a joker at the beginning" in {
@@ -132,7 +132,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         var list = joker :: g2 :: g3 :: Nil
 
         val run1 = new RummiSet(list)
-        run1.getPoints() should be(6)
+        run1.getPoints should be(6)
       }
 
       "be return the correct number of points with two jokers at the beginning" in {
@@ -141,7 +141,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         var list = joker :: joker2 :: g3 :: Nil
 
         val run1 = new RummiSet(list)
-        run1.getPoints() should be(6)
+        run1.getPoints should be(6)
       }
 
       "be return the correct number of points with two jokers at the end" in {
@@ -150,7 +150,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         var list = g1 :: g2 :: joker :: joker2 :: Nil
 
         val run1 = new RummiSet(list)
-        run1.getPoints() should be(10)
+        run1.getPoints should be(10)
       }
 
       "be return the correct number of points with two jokers random" in {
@@ -159,7 +159,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         var list = joker :: g11 :: joker2 :: g13 :: Nil
 
         val run1 = new RummiSet(list)
-        run1.getPoints() should be(46)
+        run1.getPoints should be(46)
       }
 
       "be return the correct number of points with two jokers at the end and the beginning" in {
@@ -168,7 +168,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         var list = joker :: g2 :: g3 :: joker2 :: Nil
 
         val run1 = new RummiSet(list)
-        run1.getPoints() should be(10)
+        run1.getPoints should be(10)
       }
 
       "be return the correct number of points with two jokers in the middle" in {
@@ -177,7 +177,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         var list = g1 :: joker :: joker2 :: g4 :: Nil
 
         val run1 = new RummiSet(list)
-        run1.getPoints() should be(10)
+        run1.getPoints should be(10)
       }
 
       "be return the correct number of points with a joker at the end" in {
@@ -185,7 +185,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         var list = g1 :: g2 :: g3 :: joker :: Nil
 
         val run1 = new RummiSet(list)
-        run1.getPoints() should be(10)
+        run1.getPoints should be(10)
       }
 
       "joker at wrong position should be false" in {
@@ -197,15 +197,13 @@ class RummiSetSpec extends WordSpec with Matchers {
       }
 
       "should append a tile, if added to the right" in {
-        val set = new RummiSet(List(g1))
-        set.add(g2, Ending.RIGHT)
+        val set = RummiSet(List(g1) :+ g2)
         set.tiles(0) should be(g1)
         set.tiles(1) should be(g2)
       }
 
       "should add a tile to the head, if added to the left" in {
-        val set = new RummiSet(List(g1))
-        set.add(g2, Ending.LEFT)
+        val set = new RummiSet(g2 +: List(g1))
         set.tiles(0) should be(g2)
         set.tiles(1) should be(g1)
       }

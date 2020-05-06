@@ -52,10 +52,10 @@ object Rummi {
 
     var input: String = ""
 
-    do {
+    while (input != "q") {
       print("\nrummi>")
       input = StdIn.readLine()
       tui.processInputLine(input)
-    } while (input != "q")
+    }
   }
 }

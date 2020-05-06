@@ -11,7 +11,10 @@ class MoveTileCommand(gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, new
   var newToGrid: Grid = _
 
   override def doStep: Unit = {
-    position = gridFrom.getTilePosition(tile).getOrElse(throw new NoSuchElementException("Tile not in grid."))
+    position = gridFrom
+      .getTilePosition(tile)
+      .getOrElse(throw new NoSuchElementException("Tile not in grid."))
+
     val tuple = controller.updateGrids(gridFrom, gridTo, tile, newRow, newCol)
     newFromGrid = tuple._1
     newToGrid = tuple._2

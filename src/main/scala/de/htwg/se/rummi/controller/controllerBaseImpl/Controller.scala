@@ -2,7 +2,7 @@ package de.htwg.se.rummi.controller.controllerBaseImpl
 
 import java.util.NoSuchElementException
 
-import com.google.inject.{Guice, Inject}
+import com.google.inject.{Guice, Inject, Injector}
 import de.htwg.se.rummi.controller.GameState.GameState
 import de.htwg.se.rummi.controller.{ControllerInterface, GameState}
 import de.htwg.se.rummi.model.fileIoComponent.FileIoInterface
@@ -19,12 +19,12 @@ class Controller @Inject()() extends ControllerInterface {
   private var gameState: GameState = GameState.WAITING
   var tilesMovedFromRackToGrid: List[Tile] = Nil
   private val undoManager = new UndoManager
-  val injector = Guice.createInjector(new RummiModule)
-  val fileIo = injector.getInstance(classOf[FileIoInterface])
+  val injector: Injector = Guice.createInjector(new RummiModule)
+  val fileIo: FileIoInterface = injector.getInstance(classOf[FileIoInterface])
 
   var game: Game = Game(Nil)
 
-  def initGame(): Unit = {
+  def initGame: Unit = {
     val players = game.playerNames
     initGame(players)
   }
@@ -45,7 +45,7 @@ class Controller @Inject()() extends ControllerInterface {
     publish(new PlayerSwitchedEvent)
   }
 
-  def save(): String = {
+  def save: String = {
     fileIo.save(game)
   }
 
@@ -88,7 +88,7 @@ class Controller @Inject()() extends ControllerInterface {
       return
     }
 
-    if (tilesMovedFromRackToGrid.size > 0) {
+    if (tilesMovedFromRackToGrid.nonEmpty) {
       activePlayer.inFirstRound = false
     }
 
@@ -120,21 +120,20 @@ class Controller @Inject()() extends ControllerInterface {
 
   def setGrid(newGrid: Grid) = game.grid = newGrid
 
-  def setRack(newRack: Grid) = {
-    game.racks = game.racks + (activePlayer -> newRack)
-  }
+  def setRack(newRack: Grid) = game.racks += (activePlayer -> newRack)
 
   /**
-    * Did player reached minimum score to get out?
-    * All sets which the user builds or appends to do count.
-    *
-    * @return true if player reached minimum score
-    */
+   * Did player reached minimum score to get out?
+   * All sets which the user builds or appends to do count.
+   *
+   * @return true if player reached minimum score
+   */
   def playerReachedMinLayOutPoints(): Boolean = {
     val sumOfFirstMove = extractSets(field)
       .filter(x => x.tiles.toSet
         .intersect(tilesMovedFromRackToGrid.toSet).size > 0)
-      .map(x => x.getPoints()).sum
+      .map(x => x.getPoints)
+      .sum
 
     if (sumOfFirstMove < Const.MINIMUM_POINTS_FIRST_ROUND) {
       return false
@@ -149,14 +148,14 @@ class Controller @Inject()() extends ControllerInterface {
     field.tiles.groupBy(x => x._1._1).map(x => x._2).foreach(map => {
       var list = map.map(x => (x._1._2, x._2)).toList.sortBy(x => x._1)
 
-      while (!list.isEmpty) {
+      while (list.nonEmpty) {
         var tiles: List[Tile] = List.empty
         tiles = list.head._2 :: tiles
-        while (list.find(x => x._1 == list.head._1 + 1).isDefined) {
+        while (list.exists(x => x._1 == list.head._1 + 1)) {
           list = list.drop(1)
           tiles = list.head._2 :: tiles
         }
-        sets = new RummiSet(tiles.reverse) :: sets
+        sets = RummiSet(tiles.reverse) :: sets
         list = list.drop(1)
       }
     })
@@ -164,14 +163,14 @@ class Controller @Inject()() extends ControllerInterface {
   }
 
   /**
-    * Check if all RummiSets on the field are valid.
-    *
-    * @return true if all sets are valid.
-    */
+   * Check if all RummiSets on the field are valid.
+   *
+   * @return true if all sets are valid.
+   */
   private def validateField(): Boolean = {
     var valid = true
     for (s <- extractSets(field)) {
-      if (s.isValidRun() == false && s.isValidGroup() == false) {
+      if (!s.isValidRun() && !s.isValidGroup()) {
         valid = false
       }
     }
@@ -183,9 +182,9 @@ class Controller @Inject()() extends ControllerInterface {
   }
 
   /**
-    * Draw: If the player can not place a stone on the field, he must take a stone from the stack of covered stones.
-    */
-  def draw(): Unit = {
+   * Draw: If the player can not place a stone on the field, he must take a stone from the stack of covered stones.
+   */
+  def draw: Unit = {
 
     if (gameState == GameState.DRAWN) {
       return
@@ -215,7 +214,7 @@ class Controller @Inject()() extends ControllerInterface {
 
   private def moveTileImpl(gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): (Grid, Grid) = {
     gridFrom.getTilePosition(tile) match {
-      case Some(x) => {
+      case Some(x) =>
         if (gridTo == gridFrom) {
           // tile is moved within the same grid
           val tiles = gridFrom.tiles - (x) + ((newRow, newCol) -> tile)
@@ -223,7 +222,6 @@ class Controller @Inject()() extends ControllerInterface {
         } else {
           (gridFrom.copy(gridFrom.tiles - (x)), gridTo.copy(gridTo.tiles + ((newRow, newCol) -> tile)))
         }
-      }
       case None => throw new NoSuchElementException("Tile not found in rack.")
     }
   }
@@ -234,15 +232,15 @@ class Controller @Inject()() extends ControllerInterface {
   }
 
   /**
-    * Move a tile.
-    *
-    * @param gridFrom The grid, which currently holds the tile
-    * @param gridTo   The grid, the tile should be moved to
-    * @param tile     The tile to move
-    * @param newRow   The row of the new position
-    * @param newCol   The col of the new position
-    * @return the updated Grids
-    */
+   * Move a tile.
+   *
+   * @param gridFrom The grid, which currently holds the tile
+   * @param gridTo   The grid, the tile should be moved to
+   * @param tile     The tile to move
+   * @param newRow   The row of the new position
+   * @param newCol   The col of the new position
+   * @return the updated Grids
+   */
   override def updateGrids(gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): (Grid, Grid) = {
 
     val (f, t): (Grid, Grid) = moveTileImpl(gridFrom, gridTo, tile, newRow, newCol)
@@ -270,9 +268,9 @@ class Controller @Inject()() extends ControllerInterface {
     (f, t)
   }
 
-  private def setGameStateAfterMoveTile() = {
+  private def setGameStateAfterMoveTile(): Unit = {
 
-    if (tilesMovedFromRackToGrid.size == 0) {
+    if (tilesMovedFromRackToGrid.isEmpty) {
       setGameState(GameState.WAITING)
     } else if (validateField()) {
       if (activePlayer.inFirstRound) {
@@ -282,7 +280,7 @@ class Controller @Inject()() extends ControllerInterface {
           setGameState(GameState.TO_LESS)
         }
       } else {
-        if (getRack(activePlayer).tiles.size == 0) {
+        if (getRack(activePlayer).tiles.isEmpty) {
           setGameState(GameState.WON)
         } else {
           setGameState(GameState.VALID)
@@ -293,14 +291,14 @@ class Controller @Inject()() extends ControllerInterface {
     }
   }
 
-  def sortRack(): Unit = {
+  def sortRack: Unit = {
     val sortedRack = sortRack(getRack(activePlayer))
     setRack(sortedRack)
     publish(new FieldChangedEvent)
   }
 
   private def sortRack(rack: Grid): Grid = {
-    var tilesByColor = rack.tiles.map(x => x._2)
+    var tilesByColor = rack.tiles.values
       .groupBy(x => x.colour)
     while (tilesByColor.size > Const.RACK_ROWS) {
       // combine colors if there are to many
@@ -310,16 +308,20 @@ class Controller @Inject()() extends ControllerInterface {
       tilesByColor = tilesByColor + (keyOfSecondElement -> elements)
       tilesByColor = tilesByColor - tilesByColor.keys.toList(0)
     }
+
     var newMap: Map[(Int, Int), Tile] = Map.empty
     var row = 1
-    tilesByColor.map(x => x._2.toList).foreach(listOfTiles => {
-      var col = 1
-      listOfTiles.sortBy(t => t.number).foreach(t => {
-        newMap = newMap + ((row, col) -> t)
-        col += 1
+
+    tilesByColor
+      .map(x => x._2.toList)
+      .foreach(listOfTiles => {
+        var col = 1
+        listOfTiles.sortBy(t => t.number).foreach(t => {
+          newMap = newMap + ((row, col) -> t)
+          col += 1
+        })
+        row += 1
       })
-      row += 1
-    })
     Grid(Const.RACK_ROWS, Const.RACK_COLS, newMap)
   }
 
@@ -366,13 +368,13 @@ class Controller @Inject()() extends ControllerInterface {
     val toRow: Int = toChars.filter(x => x.isDigit).mkString("").toInt
     val fromRow: Int = fromChars.filter(x => x.isDigit).mkString("").toInt
 
-    val fromCol: Int = toColNumber(fromChars(0).charValue()) match {
+    val fromCol: Int = toColNumber(fromChars.head.charValue()) match {
       case Some(c) => c
       case None => {
         return None
       }
     }
-    val toCol: Int = toColNumber(toChars(0).charValue()) match {
+    val toCol: Int = toColNumber(toChars.head.charValue()) match {
       case Some(c) => c
       case None =>
         return None
@@ -382,8 +384,6 @@ class Controller @Inject()() extends ControllerInterface {
 }
 
 case class PlayerSwitchedEvent() extends Event
-
-//case class RackChangedEvent() extends Event
 
 case class ValidStateChangedEvent() extends Event
 

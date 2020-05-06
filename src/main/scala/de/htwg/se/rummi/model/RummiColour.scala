@@ -1,6 +1,6 @@
 package de.htwg.se.rummi.model
 
-case class RummiColour(val name: String, val ansiCode: String) extends Ordered[RummiColour]{
+case class RummiColour(name: String, ansiCode: String) extends Ordered[RummiColour]{
 
   val ANSI_RESET = "\u001B[0m"
 
