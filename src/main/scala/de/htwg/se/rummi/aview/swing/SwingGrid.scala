@@ -2,7 +2,7 @@ package de.htwg.se.rummi.aview.swing
 
 import java.awt.Color
 
-import de.htwg.se.rummi.model.{Ending, Grid, RummiSet, Tile}
+import de.htwg.se.rummi.model.{Grid, RummiSet, Tile}
 
 import scala.collection.mutable
 import scala.swing.{Dimension, GridPanel, Swing}
