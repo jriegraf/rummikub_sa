@@ -19,21 +19,10 @@ case class Grid(ROWS: Int, COLS: Int, tiles: Map[(Int, Int), Tile]) {
     None
   }
 
-  /**
-    * Get the position of a tile in the grid.
-    *
-    * @param tile the tile
-    * @return row, col tuple
-    */
   def getTilePosition(tile: Tile): Option[(Int, Int)] = tiles.find(x => x._2 == tile).map(x => x._1)
 
   def size(): Int = tiles.size
 
-  /**
-    * Creates a new Grid with same size but with the specified tiles.
-    * @param tiles the tiles for the new Grid
-    * @return a new Grid with same size
-    */
   def copy(tiles: Map[(Int, Int), Tile]): Grid ={
     Grid(ROWS,COLS, tiles)
   }

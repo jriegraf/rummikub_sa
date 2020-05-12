@@ -53,11 +53,11 @@ class Tui(co: ControllerInterface) extends Reactor {
   }
 
   reactions += {
-    case event: FieldChangedEvent => {
+    case _: FieldChangedEvent => {
       printTui
     }
 
-    case event: ValidStateChangedEvent => {
+    case _: ValidStateChangedEvent => {
       if (co.game.isValidField) {
         println("TUI: Field is valid again.")
       } else {
@@ -65,12 +65,12 @@ class Tui(co: ControllerInterface) extends Reactor {
       }
     }
 
-    case event: PlayerSwitchedEvent => {
+    case _: PlayerSwitchedEvent => {
       println("It's " + co.activePlayer.name + "'s turn.")
       printTui
     }
 
-    case event: GameStateChanged => {
+    case _: GameStateChanged => {
       co.getGameState match {
         case GameState.WON => {
           println(("---- " + co.activePlayer + " wins! ----").toUpperCase)

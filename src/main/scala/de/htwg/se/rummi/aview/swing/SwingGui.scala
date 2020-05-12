@@ -114,12 +114,12 @@ class SwingGui(co: ControllerInterface) extends MainFrame {
       }
     }
 
-    case event: FieldChangedEvent => {
+    case _: FieldChangedEvent => {
       field.displayGrid(co.field)
       rack.displayGrid(co.getRack(co.activePlayer))
     }
 
-    case event: ValidStateChangedEvent => {
+    case _: ValidStateChangedEvent => {
       if (co.game.isValidField) {
         finishButton.enabled = true
       } else {
@@ -166,7 +166,7 @@ class SwingGui(co: ControllerInterface) extends MainFrame {
     }
   }
 
-  private def fieldClicked(clickedField: Field) = {
+  private def fieldClicked(clickedField: Field): Unit = {
     // Click on a empty field and there is no field selected -> Do nothing
     if (clickedField.tileOpt.isEmpty && selectedField.isEmpty) {
 
@@ -198,7 +198,7 @@ class SwingGui(co: ControllerInterface) extends MainFrame {
     }
   }
 
-  private def moveTile(clickedField: Field) = {
+  private def moveTile(clickedField: Field): Unit = {
     if (rack.containsField(selectedField.get) && field.containsField(clickedField)) {
       co.moveTile(co.rackOfActivePlayer, co.field, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
     }
@@ -216,7 +216,7 @@ class SwingGui(co: ControllerInterface) extends MainFrame {
     }
   }
 
-  def init = {
+  def init: Unit = {
     rack.displayGrid(co.getRack(co.activePlayer))
     field.displayGrid(co.field)
   }

@@ -8,26 +8,35 @@ import scala.collection.mutable
 import scala.swing.{Dimension, GridPanel, Swing}
 
 /**
-  * Grid holds the runs and groups.
-  *
-  * @param ROWS Amount of rows in the grid.
-  * @param COLS amount of cols in the grid.
-  */
+ * Grid holds the runs and groups.
+ *
+ * @param ROWS Amount of rows in the grid.
+ * @param COLS amount of cols in the grid.
+ */
 class SwingGrid(val ROWS: Int, val COLS: Int) extends GridPanel(rows0 = ROWS, cols0 = COLS) {
 
-  var fields: List[Field] = Nil
   val setsInGrid = mutable.Map[RummiSet, (Field, Field)]()
 
   preferredSize = new Dimension(ROWS * 11, COLS * 11)
 
-  for (i <- 1 to ROWS) {
-    for (j <- 1 to COLS) {
-      val field = new Field(i, j)
-      field.border = Swing.LineBorder(Color.BLACK, 1)
-      contents += field
-      fields = field :: fields
-    }
+  //  for (i <- 1 to ROWS) {
+  //    for (j <- 1 to COLS) {
+  //      val field = new Field(i, j)
+  //      field.border = Swing.LineBorder(Color.BLACK, 1)
+  //      contents += field
+  //      fields = field :: fields
+  //    }
+  //  }
+
+  private val setBorder = (f: Field) => {
+    f.border = Swing.LineBorder(Color.BLACK, 1)
+    f
   }
+
+  val fields = (1 to ROWS).flatMap(i => (1 to COLS)
+    map (j => new Field(i, j))).map(f => setBorder(f)).toList
+
+  contents ++= fields
 
   def getLeftField(set: RummiSet): Field = {
     setsInGrid(set)._1
@@ -38,11 +47,11 @@ class SwingGrid(val ROWS: Int, val COLS: Int) extends GridPanel(rows0 = ROWS, co
   }
 
   /**
-    * Find the set which is currently placed on this field.
-    *
-    * @param field the field on which the set is placed
-    * @return Some if there is a set, none otherwise
-    */
+   * Find the set which is currently placed on this field.
+   *
+   * @param field the field on which the set is placed
+   * @return Some if there is a set, none otherwise
+   */
   def getSet(field: Field): Option[RummiSet] = {
     setsInGrid.find(x => {
       val (left, right) = x._2
@@ -56,7 +65,7 @@ class SwingGrid(val ROWS: Int, val COLS: Int) extends GridPanel(rows0 = ROWS, co
   def displayGrid(grid: Grid): Unit = {
     fields.foreach(f => f.unsetTile())
     grid.tiles.foreach(x => {
-      val (r,c) = x._1
+      val (r, c) = x._1
       val t = x._2
       getField(r, c).map(x => x.setTile(t))
     })
@@ -64,7 +73,7 @@ class SwingGrid(val ROWS: Int, val COLS: Int) extends GridPanel(rows0 = ROWS, co
   }
 
   def isTileOnField(tile: Tile): Boolean = {
-    fields.find(t => t.tileOpt.isDefined && t.tileOpt.get == tile).isDefined
+    fields.exists(t => t.tileOpt.isDefined && t.tileOpt.get == tile)
   }
 
   def containsField(field: Field): Boolean = {

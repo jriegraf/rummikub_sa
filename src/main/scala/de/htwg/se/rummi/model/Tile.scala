@@ -2,6 +2,7 @@ package de.htwg.se.rummi.model
 
 case class Tile(number: Int, colour: RummiColour, joker : Boolean = false) {
 
+  // TODO: unnötig?
   override def equals(that: Any): Boolean = {
     that match {
       case t: Tile => t.eq(this)

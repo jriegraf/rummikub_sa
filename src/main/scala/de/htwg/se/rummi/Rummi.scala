@@ -32,10 +32,11 @@ object Rummi {
       print("Number of players? ")
       val numberOfPlayer = StdIn.readLine().toInt
 
-      for (i <- 1 to numberOfPlayer) {
-        print("Player " + i + ": ")
-        playerNames = StdIn.readLine() :: playerNames
-      }
+      (1 to numberOfPlayer)
+        .foreach(i => {
+          print("Player " + i + ": ")
+          playerNames = StdIn.readLine() :: playerNames
+        })
     }
 
     val injector = Guice.createInjector(new RummiModule)

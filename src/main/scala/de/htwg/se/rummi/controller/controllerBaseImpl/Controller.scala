@@ -36,7 +36,7 @@ class Controller @Inject()() extends ControllerInterface {
     game.activePlayerIndex = 0
 
     players.foreach(p => {
-      p.inFirstRound = true
+      //p.inFirstRound = true
       p.points = 0
     })
 
@@ -89,7 +89,7 @@ class Controller @Inject()() extends ControllerInterface {
     }
 
     if (tilesMovedFromRackToGrid.nonEmpty) {
-      activePlayer.inFirstRound = false
+      //activePlayer.inFirstRound = false
     }
 
     game.activePlayerIndex = game.activePlayerIndex + 1
@@ -145,20 +145,28 @@ class Controller @Inject()() extends ControllerInterface {
   def extractSets(field: Grid): List[RummiSet] = {
     var sets: List[RummiSet] = Nil
 
-    field.tiles.groupBy(x => x._1._1).map(x => x._2).foreach(map => {
-      var list = map.map(x => (x._1._2, x._2)).toList.sortBy(x => x._1)
+    field.tiles.groupBy(x => x._1._1)
+      .map(x => x._2)
+      .foreach(map => {
 
-      while (list.nonEmpty) {
-        var tiles: List[Tile] = List.empty
-        tiles = list.head._2 :: tiles
-        while (list.exists(x => x._1 == list.head._1 + 1)) {
-          list = list.drop(1)
+        var list = map.map(x => (x._1._2, x._2))
+          .toList
+          .sortBy(x => x._1)
+
+        while (list.nonEmpty) {
+          var tiles: List[Tile] = List.empty
           tiles = list.head._2 :: tiles
+
+          while (list.exists(x => x._1 == list.head._1 + 1)) {
+            list = list.drop(1)
+            tiles = list.head._2 :: tiles
+          }
+
+          sets = RummiSet(tiles.reverse) :: sets
+          list = list.drop(1)
         }
-        sets = RummiSet(tiles.reverse) :: sets
-        list = list.drop(1)
-      }
-    })
+
+      })
     sets
   }
 
