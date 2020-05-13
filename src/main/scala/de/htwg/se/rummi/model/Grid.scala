@@ -11,26 +11,34 @@ case class Grid(ROWS: Int, COLS: Int, tiles: Map[(Int, Int), Tile]) {
   }
 
   def getFreeField(): Option[(Int, Int)] = {
-    for (i <- 1 to ROWS; j <- 1 to COLS) {
-      if (getTileAt(i, j).isEmpty) {
-        return Some(((i, j)))
-      }
-    }
-    None
+    //    for (i <- 1 to ROWS; j <- 1 to COLS) {
+    //      if (getTileAt(i, j).isEmpty) {
+    //        return Some(((i, j)))
+    //      }
+    //    }
+    (1 to ROWS).flatMap(a => (1 to COLS).map(b => (a, b)))
+      .map(t => (t, getTileAt(t._1, t._2)))
+      .find(t => t._2.isEmpty)
+      .map(t => t._1)
   }
+
 
   def getTilePosition(tile: Tile): Option[(Int, Int)] = tiles.find(x => x._2 == tile).map(x => x._1)
 
   def size(): Int = tiles.size
 
-  def copy(tiles: Map[(Int, Int), Tile]): Grid ={
-    Grid(ROWS,COLS, tiles)
+  def copy(tiles: Map[(Int, Int), Tile]): Grid = {
+    Grid(ROWS, COLS, tiles)
   }
 
   def toXml = {
     <grid>
-      <cols>{COLS}</cols>
-      <rows>{ROWS}</rows>
+      <cols>
+        {COLS}
+      </cols>
+      <rows>
+        {ROWS}
+      </rows>
       <tiles>
         {tiles.toList.map(mapTupleToXml)}
       </tiles>
@@ -43,8 +51,12 @@ case class Grid(ROWS: Int, COLS: Int, tiles: Map[(Int, Int), Tile]) {
     val t = tuple._2
 
     <tilePos>
-      <x>{x}</x>
-      <y>{y}</y>{t.toXml}
+      <x>
+        {x}
+      </x>
+      <y>
+        {y}
+      </y>{t.toXml}
     </tilePos>
   }
 }
@@ -55,9 +67,9 @@ object Grid {
 
   implicit val mapWrites: Writes[Grid] = new Writes[Grid] {
     override def writes(o: Grid): JsValue = Json.obj(
-        "COLS" -> JsNumber(o.COLS),
-        "ROWS" -> JsNumber(o.ROWS),
-        "tiles" -> JsArray(o.tiles.toList.map(mapTupleToJson))
+      "COLS" -> JsNumber(o.COLS),
+      "ROWS" -> JsNumber(o.ROWS),
+      "tiles" -> JsArray(o.tiles.toList.map(mapTupleToJson))
     )
   }
 

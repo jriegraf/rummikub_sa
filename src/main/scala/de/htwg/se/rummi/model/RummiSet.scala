@@ -1,9 +1,8 @@
 package de.htwg.se.rummi.model
 
-case class RummiSet(tiles: List[Tile]) {
+import de.htwg.se.rummi.Const
 
-  val highest_number = 13
-  val lowest_number = 1
+case class RummiSet(tiles: List[Tile]) {
 
   def getPoints: Int = {
     val pivotTile = tiles.find(t => !t.joker) match {
@@ -50,7 +49,7 @@ case class RummiSet(tiles: List[Tile]) {
           buffer.update(i, buffer(pivotIndex) - (pivotIndex - i))
         }
       }
-      if (buffer.max > highest_number || buffer.min < lowest_number) {
+      if (buffer.max > Const.highest_number || buffer.min < Const.lowest_number) {
         return false
       }
       for (i <- 0 to tiles.size - 1) {
@@ -76,15 +75,10 @@ case class RummiSet(tiles: List[Tile]) {
   def isValidGroup(): Boolean = {
     if (tiles.size < 3) return false
     if (tiles.size > 4) return false
-    val isJoker = tiles.count(x => x.joker) > 0
-    if (!isJoker) {
-      if (tiles.groupBy(_.number).size > 1) return false
-      if (tiles.groupBy(_.colour).size != tiles.size) return false
-      return true
-    } else {
-      //joker involved
-      return true
-    }
+    if (tiles.filter(x => !x.joker)
+      .groupBy(_.number).size > 1) return false
+    if (tiles.filter(x => !x.joker)
+      .groupBy(_.colour).size != tiles.size - tiles.count(x => x.joker)) return false
     true
   }
 

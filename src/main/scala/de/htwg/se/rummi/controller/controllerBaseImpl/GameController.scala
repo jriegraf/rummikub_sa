@@ -18,7 +18,7 @@ case class GameController(playerNames: List[String]) {
   // Alle Groups oder Runs, die auf dem Spielfeld liegen
   var grid: Grid = Grid(Const.GRID_ROWS, Const.GRID_COLS, Map.empty)
 
-  val players = playerNames.map(x => Player(x))
+  var players = playerNames.map(x => Player(x))
   var activePlayerIndex: Int = 0
   var isValidField = false
 

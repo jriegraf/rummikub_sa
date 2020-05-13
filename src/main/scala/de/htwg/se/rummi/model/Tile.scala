@@ -2,7 +2,7 @@ package de.htwg.se.rummi.model
 
 case class Tile(number: Int, colour: RummiColour, joker : Boolean = false) {
 
-  // TODO: unnötig?
+  // Necessary because there are the same tiles that we want to differentiate
   override def equals(that: Any): Boolean = {
     that match {
       case t: Tile => t.eq(this)

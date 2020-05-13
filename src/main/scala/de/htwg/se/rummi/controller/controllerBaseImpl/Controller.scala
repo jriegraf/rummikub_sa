@@ -35,10 +35,7 @@ class Controller @Inject()() extends ControllerInterface {
     tilesMovedFromRackToGrid = Nil
     game.activePlayerIndex = 0
 
-    players.foreach(p => {
-      //p.inFirstRound = true
-      p.points = 0
-    })
+    game.players = players.map(p => p.copy(points = 0))
 
     game = GameController(playerNames)
     publish(new GameStateChanged)
