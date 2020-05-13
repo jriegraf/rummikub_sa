@@ -11,6 +11,7 @@ import de.htwg.se.rummi.util.UndoManager
 import de.htwg.se.rummi.{Const, RummiModule}
 
 import scala.swing.event.Event
+import scala.util.{Failure, Success, Try}
 
 
 class Controller @Inject()() extends ControllerInterface {
@@ -269,31 +270,39 @@ class Controller @Inject()() extends ControllerInterface {
     if ((gridFrom == getRack(activePlayer)) && (gridTo == getRack(activePlayer))) {
       setRack(t)
     }
-    setGameStateAfterMoveTile()
+    setGameStateAfterMoveTile(Success(this))
     (f, t)
   }
 
-  private def setGameStateAfterMoveTile(): Unit = {
+  private def setGameStateAfterMoveTile(controller: Try[ControllerInterface]): Try[ControllerInterface] = {
+    controller match {
+      case Success(x) => {
 
-    if (tilesMovedFromRackToGrid.isEmpty) {
-      setGameState(GameState.WAITING)
-    } else if (validateField()) {
-      if (activePlayer.inFirstRound) {
-        if (playerReachedMinLayOutPoints()) {
-          setGameState(GameState.VALID)
+        if (tilesMovedFromRackToGrid.isEmpty) {
+          setGameState(GameState.WAITING)
+        } else if (validateField()) {
+          if (activePlayer.inFirstRound) {
+            if (playerReachedMinLayOutPoints()) {
+              setGameState(GameState.VALID)
+            } else {
+              setGameState(GameState.TO_LESS)
+            }
+          } else {
+            if (getRack(activePlayer).tiles.isEmpty) {
+              setGameState(GameState.WON)
+            } else {
+              setGameState(GameState.VALID)
+            }
+          }
         } else {
-          setGameState(GameState.TO_LESS)
+          setGameState(GameState.INVALID)
         }
-      } else {
-        if (getRack(activePlayer).tiles.isEmpty) {
-          setGameState(GameState.WON)
-        } else {
-          setGameState(GameState.VALID)
-        }
+
+        Success(x)
       }
-    } else {
-      setGameState(GameState.INVALID)
+      case Failure(exception) => Failure(exception)
     }
+
   }
 
   def sortRack: Unit = {
