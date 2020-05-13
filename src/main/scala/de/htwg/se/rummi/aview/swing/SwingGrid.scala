@@ -3,6 +3,7 @@ package de.htwg.se.rummi.aview.swing
 import java.awt.Color
 
 import de.htwg.se.rummi.model.{Grid, RummiSet, Tile}
+import javax.swing.border.Border
 
 import scala.collection.mutable
 import scala.swing.{Dimension, GridPanel, Swing}
@@ -19,22 +20,15 @@ class SwingGrid(val ROWS: Int, val COLS: Int) extends GridPanel(rows0 = ROWS, co
 
   preferredSize = new Dimension(ROWS * 11, COLS * 11)
 
-  //  for (i <- 1 to ROWS) {
-  //    for (j <- 1 to COLS) {
-  //      val field = new Field(i, j)
-  //      field.border = Swing.LineBorder(Color.BLACK, 1)
-  //      contents += field
-  //      fields = field :: fields
-  //    }
-  //  }
+  val fields: List[Field] = (1 to ROWS).flatMap(i => (1 to COLS).map(j => (i, j)))
+    .map(tuple => new Field(tuple._1, tuple._2))
+    .map(field => setFieldBorder(field, Swing.LineBorder(Color.BLACK, 1)))
+    .toList
 
-  private val setBorder = (f: Field) => {
-    f.border = Swing.LineBorder(Color.BLACK, 1)
+  private def setFieldBorder = (f: Field, border : Border) => {
+    f.border = border
     f
   }
-
-  val fields = (1 to ROWS).flatMap(i => (1 to COLS)
-    map (j => new Field(i, j))).map(f => setBorder(f)).toList
 
   contents ++= fields
 

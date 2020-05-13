@@ -11,11 +11,6 @@ case class Grid(ROWS: Int, COLS: Int, tiles: Map[(Int, Int), Tile]) {
   }
 
   def getFreeField(): Option[(Int, Int)] = {
-    //    for (i <- 1 to ROWS; j <- 1 to COLS) {
-    //      if (getTileAt(i, j).isEmpty) {
-    //        return Some(((i, j)))
-    //      }
-    //    }
     (1 to ROWS).flatMap(a => (1 to COLS).map(b => (a, b)))
       .map(t => (t, getTileAt(t._1, t._2)))
       .find(t => t._2.isEmpty)
