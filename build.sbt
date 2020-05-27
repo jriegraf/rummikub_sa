@@ -1,27 +1,138 @@
 import Dependencies._
 
-ThisBuild / scalaVersion     := "2.12.8"
-ThisBuild / version          := "0.1.0-SNAPSHOT"
-ThisBuild / organization     := "de.htwg.se"
+ThisBuild / scalaVersion := "2.12.8"
+ThisBuild / version := "0.1.0-SNAPSHOT"
+ThisBuild / organization := "de.JuPa"
 ThisBuild / organizationName := "JuPa"
+ThisBuild / trackInternalDependencies := TrackLevel.TrackIfMissing
+ThisBuild / exportJars := true
+
+
+name := "rummikub"
+organization in ThisBuild := "JuPa.Software"
 
 lazy val root = (project in file("."))
   .settings(
     name := "RummiScala",
     libraryDependencies += scalaTest % Test
   )
+  .dependsOn()
+  .aggregate(
+    main,
+    config,
+    controller,
+    view,
+    model
+  )
+
+lazy val config = project
+  .settings(name := "config",
+    settings,
+    libraryDependencies ++= commonDependencies ++ Seq(
+      dependencies.pureconfig
+    ))
+  .dependsOn()
+
+lazy val main = project
+  .settings(name := "main",
+    settings,
+    libraryDependencies ++= commonDependencies ++ Seq(
+      dependencies.pureconfig
+    ))
+  .dependsOn(controller, view)
 
 
+lazy val controller = project
+  .settings(name := "controller",
+    settings,
+    libraryDependencies ++= commonDependencies ++ Seq(
+      dependencies.pureconfig
+    )).dependsOn(model, config)
 
-libraryDependencies += "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3"
-libraryDependencies += "org.scalafx" %% "scalafx" % "8.0.144-R12"
+lazy val view = project
+  .settings(name := "view",
+    settings,
+    libraryDependencies ++= commonDependencies ++ Seq(
+      dependencies.pureconfig
+    ))
+  .dependsOn(model, config, controller)
+  .aggregate()
 
-libraryDependencies += "org.scala-lang.modules" % "scala-xml_2.12" % "1.0.6"
+lazy val model = project
+  .settings(name := "model", settings,
+    libraryDependencies ++= commonDependencies ++ Seq(
+      dependencies.pureconfig
+    )).dependsOn(config)
 
-libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
+// DEPENDENCIES
 
-libraryDependencies += "net.codingwell" %% "scala-guice" % "4.1.0"
+lazy val dependencies =
+  new {
+    val logbackV = "1.2.3"
+    val logstashV = "4.11"
+    val scalaLoggingV = "3.7.2"
+    val slf4jV = "1.7.25"
+    val typesafeConfigV = "1.3.1"
+    val pureconfigV = "0.8.0"
+    val monocleV = "1.4.0"
+    val akkaV = "2.5.6"
+    val scalatestV = "3.0.4"
+    val scalacheckV = "1.13.5"
 
-libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.6"
+    val logback = "ch.qos.logback" % "logback-classic" % logbackV
+    val logstash = "net.logstash.logback" % "logstash-logback-encoder" % logstashV
+    val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingV
+    val slf4j = "org.slf4j" % "jcl-over-slf4j" % slf4jV
+    val typesafeConfig = "com.typesafe" % "config" % typesafeConfigV
+    val akka = "com.typesafe.akka" %% "akka-stream" % akkaV
+    val monocleCore = "com.github.julien-truffaut" %% "monocle-core" % monocleV
+    val monocleMacro = "com.github.julien-truffaut" %% "monocle-macro" % monocleV
+    val pureconfig = "com.github.pureconfig" %% "pureconfig" % pureconfigV
+    val scalatest = "org.scalatest" %% "scalatest" % scalatestV
+    val scalaswing = "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3"
+    val scalacheck = "org.scalacheck" %% "scalacheck" % scalacheckV
+    val json = "com.typesafe.play" %% "play-json" % "2.6.6"
+    val gguice = "com.google.inject" % "guice" % "4.1.0"
+    val scalaguice = "net.codingwell" %% "scala-guice" % "4.1.0"
+  }
 
-// See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
+lazy val commonDependencies = Seq(
+  dependencies.gguice,
+  dependencies.scalaguice,
+  dependencies.scalaswing,
+  dependencies.json,
+  dependencies.logback,
+  dependencies.logstash,
+  dependencies.scalaLogging,
+  dependencies.slf4j,
+  dependencies.typesafeConfig,
+  dependencies.akka,
+  dependencies.scalatest % "test",
+  dependencies.scalacheck % "test"
+)
+
+// SETTINGS
+
+lazy val settings =
+  commonSettings
+
+lazy val compilerOptions = Seq(
+  "-unchecked",
+  "-feature",
+  "-language:existentials",
+  "-language:higherKinds",
+  "-language:implicitConversions",
+  "-language:postfixOps",
+  "-deprecation",
+  "-encoding",
+  "utf8"
+)
+
+lazy val commonSettings = Seq(
+  scalacOptions ++= compilerOptions,
+  resolvers ++= Seq(
+    "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository",
+    Resolver.sonatypeRepo("releases"),
+    Resolver.sonatypeRepo("snapshots")
+  )
+)
