@@ -65,6 +65,7 @@ lazy val dependencies =
     val akkaV = "2.5.6"
     val scalatestV = "3.0.4"
     val scalacheckV = "1.13.5"
+    val akkahttpV = "10.0.7"
 
     val scalaXml = "org.scala-lang.modules" % "scala-xml_2.12" % "1.0.6"
     val logback = "ch.qos.logback" % "logback-classic" % logbackV
@@ -82,9 +83,12 @@ lazy val dependencies =
     val json = "com.typesafe.play" %% "play-json" % "2.6.6"
     val gguice = "com.google.inject" % "guice" % "4.1.0"
     val scalaguice = "net.codingwell" %% "scala-guice" % "4.1.0"
+    val akkahttp = "com.typesafe.akka" %% "akka-http" % akkahttpV
   }
 
 lazy val commonDependencies = Seq(
+  dependencies.akkahttp,
+  dependencies.akka,
   dependencies.scalaXml,
   dependencies.gguice,
   dependencies.scalaguice,
