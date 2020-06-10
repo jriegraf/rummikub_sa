@@ -22,6 +22,5 @@ libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
 
 libraryDependencies += "net.codingwell" %% "scala-guice" % "4.1.0"
 
-libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.6"
-
+libraryDependencies += "com.typesafe.play" %% "play-json" % "2.8.1"
 // See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.

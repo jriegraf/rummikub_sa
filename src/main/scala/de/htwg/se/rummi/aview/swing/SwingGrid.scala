@@ -58,7 +58,7 @@ class SwingGrid(val ROWS: Int, val COLS: Int) extends GridPanel(rows0 = ROWS, co
 
   def displayGrid(grid: Grid): Unit = {
     fields.foreach(f => f.unsetTile())
-    grid.tiles.foreach(x => {
+    grid.getTiles.foreach(x => {
       val (r, c) = x._1
       val t = x._2
       getField(r, c).map(x => x.setTile(t))

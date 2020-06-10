@@ -1,5 +1,9 @@
 package de.htwg.se.rummi.util
 
+import de.htwg.se.rummi.model.Game
+
+import scala.util.{Failure, Try}
+
 class UndoManager {
   private var undoStack: List[Command] = Nil
   private var redoStack: List[Command] = Nil
@@ -9,24 +13,26 @@ class UndoManager {
     command.doStep
   }
 
-  def undoStep = {
+  def undoStep: Try[Game] = {
     undoStack match {
-      case Nil =>
+      case Nil => Failure(new Exception)
       case head :: stack => {
-        head.undoStep
+        val ret = head.undoStep
         undoStack = stack
         redoStack = head :: redoStack
+        ret
       }
     }
   }
 
-  def redoStep = {
+  def redoStep: Try[Game] = {
     redoStack match {
-      case Nil =>
+      case Nil => Failure(new Exception)
       case head :: stack => {
-        head.redoStep
+        val ret = head.redoStep
         redoStack = stack
         undoStack = head :: undoStack
+        ret
       }
     }
   }

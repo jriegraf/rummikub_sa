@@ -5,7 +5,7 @@ import de.htwg.se.rummi.model.fileIoComponent.FileIoInterface
 
 import scala.xml.PrettyPrinter
 
-class XmlFileIo extends FileIoInterface{
+class XmlFileIo extends FileIoInterface {
   override def load: GameController = ???
 
   override def save(game: GameController): String = {
@@ -19,6 +19,6 @@ class XmlFileIo extends FileIoInterface{
   }
 
   def gameToXml(game: GameController) = {
-    game toXml
+    ???
   }
 }

@@ -9,7 +9,7 @@ object Const {
   val highest_number = 13
 
   val RACK_ROWS: Int = 4
-  val  RACK_COLS: Int = 13
+  val RACK_COLS: Int = 13
   val GRID_ROWS: Int = 8
   val GRID_COLS: Int = 13
 

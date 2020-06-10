@@ -4,6 +4,7 @@ import com.google.inject.Guice
 import de.htwg.se.rummi.aview.Tui
 import de.htwg.se.rummi.aview.swing.SwingGui
 import de.htwg.se.rummi.controller.ControllerInterface
+import de.htwg.se.rummi.model.Game
 
 import scala.io.StdIn
 
@@ -42,12 +43,12 @@ object Rummi {
     val injector = Guice.createInjector(new RummiModule)
     val controller = injector.getInstance(classOf[ControllerInterface])
 
-    controller.initGame(playerNames)
+    val game : Game = controller.createGame(playerNames).getOrElse(throw new Exception)
 
-    val tui = new Tui(controller)
+    val tui = new Tui(controller, game)
     tui.printTui
 
-    val gui = new SwingGui(controller)
+    val gui = new SwingGui(controller, game)
     gui.init
     gui.visible = true
 

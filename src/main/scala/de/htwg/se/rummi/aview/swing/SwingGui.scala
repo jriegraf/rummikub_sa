@@ -4,18 +4,13 @@ import java.awt.Color
 
 import de.htwg.se.rummi.controller.controllerBaseImpl._
 import de.htwg.se.rummi.controller.{ControllerInterface, GameState}
+import de.htwg.se.rummi.model.Game
 
 import scala.swing._
 import scala.swing.event.ButtonClicked
+import scala.util.{Failure, Success, Try}
 
-
-/**
- *
- * @param co
- */
-class SwingGui(co: ControllerInterface) extends MainFrame {
-
-  listenTo(co)
+class SwingGui(co: ControllerInterface, var game: Game) extends MainFrame {
 
   preferredSize = new Dimension(1100, 800)
   title = "Rummikub in Scala"
@@ -34,8 +29,8 @@ class SwingGui(co: ControllerInterface) extends MainFrame {
   val sortButton = new Button("Sort")
   listenTo(sortButton)
 
-  val statusLabel = new Label(GameState.message(co.getGameState))
-  val playerLabel = new Label("Current Player: " + co.activePlayer.name)
+  val statusLabel = new Label(GameState.message(game.gameState))
+  val playerLabel = new Label("Current Player: " + game.activePlayer.name)
 
   val field = new SwingGrid(8, 13) {
     border = Swing.EmptyBorder(0, 10, 10, 10)
@@ -71,7 +66,7 @@ class SwingGui(co: ControllerInterface) extends MainFrame {
     }
   }
 
-  val south = new GridPanel(1, 3) {
+  val south: GridPanel = new GridPanel(1, 3) {
     border = Swing.EmptyBorder(10)
     contents += playerLabel
     contents += statusLabel
@@ -95,75 +90,76 @@ class SwingGui(co: ControllerInterface) extends MainFrame {
         case clickedField: Field =>
           fieldClicked(clickedField)
         case _ => if (b == getTileButton) {
-          co.draw
+          co.draw(game) match {
+            case Success(game) => updateGame(game)
+            case Failure(err) => statusLabel.text = err.getMessage
+          }
         } else if (b == finishButton) {
-          co.switchPlayer
+          co.switchPlayer(game) match {
+            case Success(game) => updateGame(game)
+            case Failure(err) => statusLabel.text = err.getMessage
+          }
         } else if (b == quitMenuItem) {
           sys.exit(0)
         } else if (b == newGameMenuItem) {
-          co.initGame
+          co.createGame(game.playerParticipations.map(p => p.player.name)) match {
+            case Success(game) => updateGame(game)
+            case Failure(err) => statusLabel.text = err.getMessage
+          }
         } else if (b == saveMenuItem) {
-          co.save
+          co.save(game)
         } else if (b == sortButton) {
-          co.sortRack
+          co.sortRack(game) match {
+            case Success(game) => updateGame(game)
+            case Failure(err) => statusLabel.text = err.getMessage
+          }
         } else if (b == undoButton) {
-          co.undo
+          co.undo(game) match {
+            case Success(game) => updateGame(game)
+            case Failure(err) => statusLabel.text = err.getMessage
+          }
         } else if (b == redoButton) {
-          co.redo
+          co.redo(game) match {
+            case Success(game) => updateGame(game)
+            case Failure(err) => statusLabel.text = err.getMessage
+          }
         }
       }
     }
+  }
 
-    case _: FieldChangedEvent => {
-      field.displayGrid(co.field)
-      rack.displayGrid(co.getRack(co.activePlayer))
-    }
-
-    case _: ValidStateChangedEvent => {
-      if (co.game.isValidField) {
-        finishButton.enabled = true
-      } else {
-        finishButton.enabled = false
-      }
-    }
-
-    case event: PlayerSwitchedEvent => {
-      playerLabel.text = "Current Player: " + co.activePlayer.name
+  def updateGame(game: Game): Unit ={
+    this.game = game
+    field.displayGrid(game.field)
+    rack.displayGrid(game.getRackOfActivePlayer)
+    if (game.isValid) {
+      finishButton.enabled = true
+    } else {
       finishButton.enabled = false
-      rack.displayGrid(co.getRack(co.activePlayer))
     }
-
-    case event: WinEvent => {
-      field.enabled = false
-    }
-
-    case event: GameStateChanged => {
-
-      co.getGameState match {
-        case GameState.DRAWN => {
-          getTileButton.enabled = false
-          finishButton.enabled = true
-          field.fields.foreach(f => f.enabled = false)
-
-        }
-        case GameState.WAITING => {
-          getTileButton.enabled = true
-          field.fields.foreach(f => f.enabled = true)
-        }
-        case GameState.INVALID | GameState.TO_LESS => {
-          finishButton.enabled = false
-          getTileButton.enabled = false
-        }
-        case GameState.VALID => {
-          finishButton.enabled = true
-          getTileButton.enabled = false
-        }
-        case _ =>
+    game.gameState match {
+      case GameState.DRAWN => {
+        getTileButton.enabled = false
+        finishButton.enabled = true
+        field.fields.foreach(f => f.enabled = false)
 
       }
+      case GameState.WAITING => {
+        getTileButton.enabled = true
+        field.fields.foreach(f => f.enabled = true)
+      }
+      case GameState.INVALID | GameState.TO_LESS => {
+        finishButton.enabled = false
+        getTileButton.enabled = false
+      }
+      case GameState.VALID => {
+        finishButton.enabled = true
+        getTileButton.enabled = false
+      }
+      case _ =>
 
-      statusLabel.text = GameState.message(co.getGameState)
     }
+    playerLabel.text = "Current Player: " + game.activePlayer.name
   }
 
   private def fieldClicked(clickedField: Field): Unit = {
@@ -198,27 +194,35 @@ class SwingGui(co: ControllerInterface) extends MainFrame {
     }
   }
 
+
   private def moveTile(clickedField: Field): Unit = {
+
+    var result: Try[Game] = null
     if (rack.containsField(selectedField.get) && field.containsField(clickedField)) {
-      co.moveTile(co.rackOfActivePlayer, co.field, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
+      result = co.moveTile(game, game.getRackOfActivePlayer, game.field, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
     }
 
     if (field.containsField(selectedField.get) && rack.containsField(clickedField)) {
-      co.moveTile(co.field, co.rackOfActivePlayer, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
+      result = co.moveTile(game, game.field, game.getRackOfActivePlayer, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
     }
 
     if (rack.containsField(selectedField.get) && rack.containsField(clickedField)) {
-      co.moveTile(co.rackOfActivePlayer, co.rackOfActivePlayer, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
+      result = co.moveTile(game, game.getRackOfActivePlayer, game.getRackOfActivePlayer, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
     }
 
     if (field.containsField(clickedField) && field.containsField(selectedField.get)) {
-      co.moveTile(co.field, co.field, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
+      result = co.moveTile(game, game.field, game.field, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
+    }
+
+    result match {
+      case Success(game) => updateGame(game)
+      case Failure(err) => statusLabel.text = err.getMessage
     }
   }
 
   def init: Unit = {
-    rack.displayGrid(co.getRack(co.activePlayer))
-    field.displayGrid(co.field)
+    rack.displayGrid(game.getRackOfActivePlayer)
+    field.displayGrid(game.field)
   }
 
 }

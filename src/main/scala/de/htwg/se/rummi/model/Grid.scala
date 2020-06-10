@@ -1,17 +1,23 @@
 package de.htwg.se.rummi.model
 
-case class Grid(ROWS: Int, COLS: Int, tiles: Map[(Int, Int), Tile]) {
+trait Grid {
 
-  tiles.keys
-    .find(x => x._1 > ROWS || x._2 > COLS)
-    .map(x => throw new IllegalArgumentException("Tile indices '" + x + "' out of bounds."))
+  val rows: Int
+  val cols: Int
+  val tiles: Map[(Int, Int), Tile]
+
+  def getRows = rows
+
+  def getCols = cols
+
+  def getTiles = tiles
 
   def getTileAt(row: Int, col: Int): Option[Tile] = {
     tiles.get((row, col))
   }
 
   def getFreeField(): Option[(Int, Int)] = {
-    (1 to ROWS).flatMap(a => (1 to COLS).map(b => (a, b)))
+    (1 to rows).flatMap(a => (1 to cols).map(b => (a, b)))
       .map(t => (t, getTileAt(t._1, t._2)))
       .find(t => t._2.isEmpty)
       .map(t => t._1)
@@ -22,61 +28,21 @@ case class Grid(ROWS: Int, COLS: Int, tiles: Map[(Int, Int), Tile]) {
 
   def size(): Int = tiles.size
 
-  def copy(tiles: Map[(Int, Int), Tile]): Grid = {
-    Grid(ROWS, COLS, tiles)
+  def copyGrid(newTiles: Map[(Int, Int), Tile]): Grid = {
+    this match {
+      case _: Field => Field(newTiles)
+      case _: Rack => Rack(newTiles)
+    }
   }
 
-  def toXml = {
-    <grid>
-      <cols>
-        {COLS}
-      </cols>
-      <rows>
-        {ROWS}
-      </rows>
-      <tiles>
-        {tiles.toList.map(mapTupleToXml)}
-      </tiles>
-    </grid>
-  }
-
-  private def mapTupleToXml(tuple: ((Int, Int), Tile)) = {
-    val x = tuple._1._1
-    val y = tuple._1._2
-    val t = tuple._2
-
-    <tilePos>
-      <x>
-        {x}
-      </x>
-      <y>
-        {y}
-      </y>{t.toXml}
-    </tilePos>
-  }
 }
 
 object Grid {
-
-  import play.api.libs.json._
-
-  implicit val mapWrites: Writes[Grid] = new Writes[Grid] {
-    override def writes(o: Grid): JsValue = Json.obj(
-      "COLS" -> JsNumber(o.COLS),
-      "ROWS" -> JsNumber(o.ROWS),
-      "tiles" -> JsArray(o.tiles.toList.map(mapTupleToJson))
-    )
-  }
-
-  def mapTupleToJson(tuple: ((Int, Int), Tile)): JsObject = {
-    val x = tuple._1._1
-    val y = tuple._1._2
-    val t = tuple._2
-    Json.obj(
-      "x" -> JsNumber(x),
-      "y" -> JsNumber(y),
-      "tile" -> Json.toJson(t)
-    )
+  def copyGrid(grid: Grid, newTiles: Map[(Int, Int), Tile]): Grid = {
+    grid match {
+      case _: Field => Field(newTiles)
+      case _: Rack => Rack(newTiles)
+    }
   }
 
 }

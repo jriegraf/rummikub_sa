@@ -1,35 +1,25 @@
 package de.htwg.se.rummi.controller.controllerBaseImpl
 
+import java.util.NoSuchElementException
+
 import de.htwg.se.rummi.Const
+import de.htwg.se.rummi.controller.GameState.{DRAWN, GameState}
 import de.htwg.se.rummi.model._
-import play.api.libs.json.{JsArray, JsValue, Json, Writes}
 
-import scala.collection.mutable
+import scala.util.{Failure, Success, Try}
 
-case class GameController(playerNames: List[String]) {
+class GameController() {
 
+  var games: List[Game] = Nil
 
-  // Jeder Spieler bewahrt seine Steine in seinem Rack auf
-  val racks = new mutable.HashMap[Player, Grid]()
+  def setGameState(game: Game, gameState: GameState) = {
+    returnSuccess(game, game.copy(gameState = gameState))
+  }
 
-  // Verdeckte Steine
-  var coveredTiles: List[Tile] = Nil
+  def newGame(players: List[Player]): Try[Game] = {
 
-  // Alle Groups oder Runs, die auf dem Spielfeld liegen
-  var grid: Grid = Grid(Const.GRID_ROWS, Const.GRID_COLS, Map.empty)
-
-  var players = playerNames.map(x => Player(x))
-  var activePlayerIndex: Int = 0
-  var isValidField = false
-
-  generateNewGame(players)
-
-
-  def generateNewGame(players: List[Player]): Unit = {
-
-    grid = Grid(Const.GRID_ROWS, Const.GRID_COLS, Map.empty)
-    coveredTiles = Nil
-    racks.empty
+    var coveredTiles: List[Tile] = List.empty
+    var racks: List[Rack] = Nil
 
     for (i <- Const.LOWEST_NUMBER to Const.HIGHEST_NUMBER) {
       coveredTiles = new Tile(i, RED) :: coveredTiles
@@ -65,70 +55,105 @@ case class GameController(playerNames: List[String]) {
           i += 1
         }
       }
-      racks.+=(p -> Grid(Const.RACK_ROWS, Const.RACK_COLS, map))
+      racks = racks :+ Rack(map)
     })
-  }
 
-  def racksToXml = {
-    racks.toList.map(tuple => {
-      <rack>
-        <player>
-          {tuple._1.name}
-        </player>{tuple._2.toXml}
-      </rack>
-    })
-  }
-
-  def racksToJson(): JsArray = {
-    JsArray(
-      racks.toList.map(tuple => {
-        Json.obj(
-          "player" -> tuple._1.name,
-          "grid" -> tuple._2
-        )
-      })
+    val game = new Game(players.head,
+      Field.empty,
+      coveredTiles,
+      players.map(p => PlayerParticipation(p, racks(players.indexOf(p)))), players.size
     )
+
+    games = games :+ game
+    println("#Games: " + games.size)
+    Success(game)
   }
 
-  def toXml() = {
-    <game>
-      <players>
-        {players.map(p => p.toXml)}
-      </players>
-      <racks>
-        {racksToXml}
-      </racks>
-      <field>
-        {grid.toXml}
-      </field>
-      <activePlayerIndex>
-        {activePlayerIndex}
-      </activePlayerIndex>
-      <isValidField>
-        {isValidField}
-      </isValidField>
-      <coveredTiles>
-        {coveredTiles.toStream.map(t => t.toXml)}
-      </coveredTiles>
-    </game>
+
+  def draw(game: Game): Try[Game] = {
+    val newTile = game.coveredTiles.head
+
+    val p = game.playerParticipations.filter(p => p.player == game.activePlayer).head
+
+    val newRack = p.rack.getFreeField() match {
+      case Some(freeField) => p.rack.copy(tiles = p.rack.tiles + (freeField -> newTile))
+      case None => throw new NoSuchElementException("No space in rack left.")
+    }
+
+    val newParticipations = game.playerParticipations.updated(game.playerParticipations.indexOf(p), p.copy(rack = newRack.asInstanceOf[Rack]))
+
+    val newGame = game.copy(
+      coveredTiles = game.coveredTiles.filter(x => x != newTile),
+      playerParticipations = newParticipations,
+      gameState = DRAWN)
+
+    returnSuccess(game, newGame)
   }
-}
 
-object GameController {
+  def setActivePlayer(game: Game, player: Player): Try[Game] = {
+    val newGame = game.copy(activePlayer = player)
+    returnSuccess(game, newGame)
+  }
 
-  import play.api.libs.json.Json
 
-  implicit val gameWrites = new Writes[GameController] {
-    override def writes(o: GameController): JsValue = {
-      Json.obj(
-        "players" -> JsArray(o.players.map(p => p.toJson)),
-        "racks" -> o.racksToJson(),
-        "field" -> o.grid,
-        "activePlayerIndex" -> o.activePlayerIndex,
-        "isValidField" -> o.isValidField,
-        "coveredTiles" -> o.coveredTiles
-      )
+  def moveTile(game: Game, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
+
+    var gridFrom: Grid = null
+    if (game.field.tiles.values.exists(t => t == tile)) {
+      gridFrom = game.field.asInstanceOf[Grid]
+    } else if (game.getRackOfActivePlayer.tiles.values.exists(t => t == tile)) {
+      gridFrom = game.getRackOfActivePlayer.asInstanceOf[Grid]
+    } else {
+      return Failure(new NoSuchElementException("Tile not found in rack."))
+    }
+
+    moveTileImpl(gridFrom, gridTo, tile, newRow, newCol) match {
+      case Failure(x) => Failure(x)
+      case Success(x) => x match {
+        case (field: Field, rack: Rack) => {
+          val part = game.getParticipationOfActivePlayer.copy(rack = rack)
+          val newGame = game.updateParticipationOfActivePlayer(part)
+            .copy(field = field)
+            .copy(turn = game.turn.copy(movedTiles = game.turn.movedTiles.filter(x => x != tile)))
+          returnSuccess(game, newGame)
+        }
+        case (field: Field, _: Field) => {
+          returnSuccess(game, game.copy(field = field))
+        }
+        case (rack: Rack, field: Field) => {
+
+          val part = game.getParticipationOfActivePlayer.copy(rack = rack)
+          val newGame = game.updateParticipationOfActivePlayer(part)
+            .copy(field = field)
+            .copy(turn = game.turn.copy(movedTiles = game.turn.movedTiles :+ tile))
+          returnSuccess(game, newGame)
+        }
+        case (rack: Rack, _: Rack) => {
+          val part = game.getParticipationOfActivePlayer.copy(rack = rack)
+          returnSuccess(game, game.updateParticipationOfActivePlayer(part))
+        }
+      }
     }
   }
-  implicit val gameReads = Json.reads[GameController]
+
+  private def moveTileImpl(gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[(Grid, Grid)] = {
+    if (gridTo.getTileAt(newRow, newCol).isDefined) return Failure(new FieldIsOccupiedException)
+
+    gridFrom.getTilePosition(tile) match {
+      case Some(x) =>
+        if (gridTo == gridFrom) {
+          // tile is moved within the same grid
+          val tiles = gridFrom.getTiles - x + ((newRow, newCol) -> tile)
+          Success((gridFrom.copyGrid(tiles), gridTo.copyGrid(tiles)))
+        } else {
+          Success(gridFrom.copyGrid(gridFrom.getTiles - (x)), gridTo.copyGrid(gridTo.getTiles + ((newRow, newCol) -> tile)))
+        }
+      case None => Failure(new NoSuchElementException("Tile not found in rack."))
+    }
+  }
+
+  private def returnSuccess(game: Game, newGame: Game): Try[Game] = {
+    games = games.updated(games.indexOf(game), newGame)
+    Success(newGame)
+  }
 }

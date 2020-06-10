@@ -17,27 +17,4 @@ case class Tile(number: Int, colour: RummiColour, joker : Boolean = false) {
       colour.stringInColor(number.toString)
     }
   }
-
-  def toXml = {
-    <tile>
-      <number>
-        {number}
-      </number>
-      <color>
-        {colour}
-      </color>
-      <joker>
-        {joker}
-      </joker>
-    </tile>
-  }
 }
-
-object Tile {
-
-  import play.api.libs.json._
-
-  implicit val tileWrites = Json.writes[Tile]
-  implicit val tileReads = Json.reads[Tile]
-}
-

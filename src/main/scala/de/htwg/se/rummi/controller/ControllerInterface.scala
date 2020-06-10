@@ -1,44 +1,28 @@
 package de.htwg.se.rummi.controller
 
-import de.htwg.se.rummi.controller.GameState.GameState
-import de.htwg.se.rummi.controller.controllerBaseImpl.GameController
-import de.htwg.se.rummi.model.{Grid, Player, Tile}
+import de.htwg.se.rummi.model.{Game, Grid, Tile}
 
 import scala.swing.Publisher
+import scala.util.Try
 
 trait ControllerInterface extends Publisher {
-  def initGame: Unit
 
-  def initGame(playerNames: List[String]): Unit
+  def createGame(playerNames: List[String]): Try[Game]
 
-  def getRack(activePlayer: Player): Grid
+  def moveTile(game: Game, from: String, to: String): Try[Game]
 
-  def getGameState: GameState
+  def moveTile(game: Game, gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game]
 
-  def activePlayer: Player
+  def draw(game: Game): Try[Game]
 
-  def game: GameController
+  def switchPlayer(game: Game): Try[Game]
 
-  def rackOfActivePlayer: Grid
+  def sortRack(game: Game): Try[Game]
 
-  def field: Grid
+  def save(game: Game): String
 
-  def moveTile(from: String, to: String): Unit
+  def redo(game: Game): Try[Game]
 
-  def moveTile(gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Unit
-
-  def draw: Unit
-
-  def switchPlayer
-
-  def sortRack: Unit
-
-  def save: String
-
-  def redo: Unit
-
-  def undo: Unit
-
-  def updateGrids(gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): (Grid, Grid)
+  def undo(game: Game): Try[Game]
 
 }

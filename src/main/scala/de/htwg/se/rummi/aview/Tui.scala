@@ -1,14 +1,14 @@
 package de.htwg.se.rummi.aview
 
-import de.htwg.se.rummi.Const
-import de.htwg.se.rummi.controller.GameState
-import de.htwg.se.rummi.controller.ControllerInterface
+import de.htwg.se.rummi.Const._
 import de.htwg.se.rummi.controller.controllerBaseImpl.{FieldChangedEvent, GameStateChanged, PlayerSwitchedEvent, ValidStateChangedEvent}
-import de.htwg.se.rummi.model.Grid
+import de.htwg.se.rummi.controller.{ControllerInterface, GameState}
+import de.htwg.se.rummi.model.{Game, Grid}
 
 import scala.swing.Reactor
+import scala.util.{Failure, Success}
 
-class Tui(co: ControllerInterface) extends Reactor {
+class Tui(co: ControllerInterface, var game: Game) extends Reactor {
 
 
   listenTo(co)
@@ -19,14 +19,17 @@ class Tui(co: ControllerInterface) extends Reactor {
       case "q" =>
       case "e" => //controller.createEmptyGrid
       case "n" => //controller.createNewGrid
-      case "z" => co.undo
-      case "y" => co.redo
-      case "s" => print(co.save)
-      case "sort" => co.sortRack
-      case "finish" => co.switchPlayer
-      case "draw" => co.draw
+      case "z" => co.undo(game)
+      case "y" => co.redo(game)
+      case "s" => print(co.save(game))
+      case "sort" => co.sortRack(game)
+      case "finish" => co.switchPlayer(game)
+      case "draw" => co.draw(game)
       case _ => input.split(" ").toList match {
-        case from :: _ :: to :: Nil => co.moveTile(from, to)
+        case from :: _ :: to :: Nil => co.moveTile(game, from, to) match {
+          case Success(value) => game = value
+          case Failure(exception) => println(exception.getMessage)
+        }
         case _ => println("Can not parse input.")
       }
     }
@@ -34,16 +37,16 @@ class Tui(co: ControllerInterface) extends Reactor {
 
   def printTui: Unit = {
     print("\n   ")
-    print(('A' to ('A' + Const.GRID_COLS - 1).toChar).mkString("  ", "  ", "\n"))
+    print(('A' to ('A' + GRID_COLS - 1).toChar).mkString("  ", "  ", "\n"))
 
     var i = 1
-    val gridStrings = printGrid(co.field, Const.GRID_ROWS).map(x => {
+    val gridStrings = printGrid(game.field, GRID_ROWS).map(x => {
       val s = f"$i%2d" + "|" + x
       i += 1
       s
     })
 
-    val rackStrings = printGrid(co.rackOfActivePlayer, Const.RACK_ROWS).map(x => {
+    val rackStrings = printGrid(game.getRackOfActivePlayer, RACK_ROWS).map(x => {
       val s = f"$i%2d" + "|" + x
       i += 1
       s
@@ -58,7 +61,7 @@ class Tui(co: ControllerInterface) extends Reactor {
     }
 
     case _: ValidStateChangedEvent => {
-      if (co.game.isValidField) {
+      if (game.isValid) {
         println("TUI: Field is valid again.")
       } else {
         println("TUI: Field is not valid anymore.")
@@ -66,14 +69,14 @@ class Tui(co: ControllerInterface) extends Reactor {
     }
 
     case _: PlayerSwitchedEvent => {
-      println("It's " + co.activePlayer.name + "'s turn.")
+      println("It's " + game.activePlayer.name + "'s turn.")
       printTui
     }
 
     case _: GameStateChanged => {
-      co.getGameState match {
+      game.gameState match {
         case GameState.WON => {
-          println(("---- " + co.activePlayer + " wins! ----").toUpperCase)
+          println(("---- " + game.activePlayer + " wins! ----").toUpperCase)
         }
         case _ =>
       }
@@ -85,7 +88,7 @@ class Tui(co: ControllerInterface) extends Reactor {
     var rows: List[String] = Nil
     for (i <- 1 to amountRows) {
       var row = ""
-      for (j <- 1 to Const.GRID_COLS) {
+      for (j <- 1 to GRID_COLS) {
         row += " " + (grid.getTileAt(i, j) match {
           case Some(t) => if (t.number < 10) {
             " " + t.toString

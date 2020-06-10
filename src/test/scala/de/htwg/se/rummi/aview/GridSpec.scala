@@ -1,17 +1,11 @@
 package de.htwg.se.rummi.aview
 
-import de.htwg.se.rummi.controller.controllerBaseImpl.Controller
-import de.htwg.se.rummi.model._
-import de.htwg.se.rummi.model.{Grid, RummiSet, Tile}
 import org.scalatest.{Matchers, WordSpec}
 
 class GridSpec extends WordSpec with Matchers {
 
   "A grid is the playingfield of the game. When constructed it " should {
-    val grid = new Grid(8, 13, Map.empty)
 
-    val set1 = new RummiSet(new Tile(1, GREEN) :: new Tile(2, GREEN) :: Nil)
-    val set2 = new RummiSet(new Tile(1, GREEN) :: new Tile(2, GREEN) :: Nil)
 
 
     "find a free space in an empty grid" in {

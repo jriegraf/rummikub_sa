@@ -1,4 +1,4 @@
-package de.htwg.se.rummi.controller
+package de.htwg.se.rummi.controller // Custom validation helpers
 
 object GameState extends Enumeration {
   type GameState = Value
@@ -16,5 +16,4 @@ object GameState extends Enumeration {
   def message(gameStatus: GameState) = {
     map(gameStatus)
   }
-
 }
