@@ -7,6 +7,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import de.htwg.se.rummi.controller.ControllerInterface
+import de.htwg.se.rummi.controller.fileIoComponent.jsonImpl.JsonFileIo
 import de.htwg.se.rummi.model.Game
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -19,7 +20,7 @@ class RestService(controller: ControllerInterface, var game: Game) {
 
   val route: Route = get {
     pathSingleSlash {
-      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Hello World!</h1>"))
+      complete(HttpEntity(ContentTypes.`application/json`, new JsonFileIo().gameToJson(game)))
     }
   }
   val bindingFuture: Future[Http.ServerBinding] = Http().bindAndHandle(route, "localhost", 8080)

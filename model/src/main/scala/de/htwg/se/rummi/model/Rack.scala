@@ -1,6 +1,7 @@
 package de.htwg.se.rummi.model
 
 import de.htwg.se.rummi.Const._
+import play.api.libs.json.{JsArray, JsNumber, JsObject, JsValue, Json, Writes}
 
 case class Rack(tiles: Map[(Int, Int), Tile]) extends Grid {
 
@@ -37,5 +38,26 @@ case class Rack(tiles: Map[(Int, Int), Tile]) extends Grid {
         row += 1
       })
     Rack(newMap)
+  }
+}
+
+object Rack {
+
+  implicit val writes: Writes[Rack] = new Writes[Rack] {
+    def writes(field: Rack): JsValue = {
+      Json.obj(
+        "rows" -> field.rows,
+        "cols" -> field.cols,
+        "tiles" -> JsArray(field.tiles.toList.map(mapTupleToJson))
+      )
+    }
+
+    private def mapTupleToJson(tuple: ((Int, Int), Tile)): JsObject = {
+      Json.obj(
+        "row" -> JsNumber(tuple._1._1),
+        "col" -> JsNumber(tuple._1._2),
+        "tile" -> Json.toJson(tuple._2)
+      )
+    }
   }
 }

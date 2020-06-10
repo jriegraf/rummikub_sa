@@ -1,5 +1,7 @@
 package de.htwg.se.rummi.model
 
+import play.api.libs.json.{JsArray, JsNumber, JsObject, JsValue, Json, Writes}
+
 trait Grid {
 
   val rows: Int
@@ -42,6 +44,28 @@ object Grid {
     grid match {
       case _: Field => Field(newTiles)
       case _: Rack => Rack(newTiles)
+    }
+  }
+
+  object Grid {
+    def empty: Field = Field(Map.empty)
+
+    implicit val writes: Writes[Grid] = new Writes[Grid] {
+      def writes(field: Grid): JsValue = {
+        Json.obj(
+          "rows" -> field.rows,
+          "cols" -> field.cols,
+          "tiles" -> JsArray(field.tiles.toList.map(mapTupleToJson))
+        )
+      }
+
+      private def mapTupleToJson(tuple: ((Int, Int), Tile)): JsObject = {
+        Json.obj(
+          "row" -> JsNumber(tuple._1._1),
+          "col" -> JsNumber(tuple._1._2),
+          "tile" -> Json.toJson(tuple._2)
+        )
+      }
     }
   }
 

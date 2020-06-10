@@ -38,7 +38,7 @@ class Controller @Inject()() extends ControllerInterface {
   }
 
   def save(game: Game): String = {
-    fileIo.save(gameController)
+    fileIo.save(game)
   }
 
   def players(game: Game): List[Player] = {

@@ -5,6 +5,8 @@ import de.htwg.se.rummi.controller.fileIoComponent.xmlFileIo.XmlFileIo
 import de.htwg.se.rummi.model.{RummiSet, Tile, _}
 import org.scalatest.{Matchers, WordSpec}
 
+import scala.util.{Failure, Success}
+
 class ControllerSpec extends WordSpec with Matchers {
 
 
@@ -139,18 +141,27 @@ class ControllerSpec extends WordSpec with Matchers {
 
   "On save, controller " should {
     "return the serialized game in json format" in {
-      controller.createGame("p1" :: "p2" :: Nil)
-      val fileIo = new JsonFileIo();
-      val json = fileIo.save(controller.gameController)
-      json shouldNot(be(""))
+      controller.createGame("p1" :: "p2" :: Nil) match {
+        case Failure(exception) =>
+        case Success(game) => {
+          val fileIo = new JsonFileIo();
+          val json = fileIo.save(game)
+          json shouldNot(be(""))
+        }
+      }
+
     }
 
     "return the serialized game in xml format" in {
 
-      controller.createGame("p1" :: "p2" :: Nil)
-      val fileIo = new XmlFileIo();
-      val xml = fileIo.save(controller.gameController)
-      xml shouldNot(be(""))
+      controller.createGame("p1" :: "p2" :: Nil) match {
+        case Failure(exception) =>
+        case Success(game) => {
+          val fileIo = new XmlFileIo();
+          val xml = fileIo.save(game)
+          xml shouldNot(be(""))
+        }
+      }
     }
   }
 

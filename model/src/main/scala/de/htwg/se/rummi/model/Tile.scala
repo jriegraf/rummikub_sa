@@ -18,3 +18,11 @@ case class Tile(number: Int, colour: RummiColour, joker : Boolean = false) {
     }
   }
 }
+
+object Tile {
+
+  import play.api.libs.json._
+
+  implicit val tileWrites = Json.writes[Tile]
+  implicit val tileReads = Json.reads[Tile]
+}

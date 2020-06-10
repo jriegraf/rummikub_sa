@@ -86,3 +86,10 @@ case class RummiSet(tiles: List[Tile]) {
     tiles.toStream.map(t => t.toString).mkString
   }
 }
+object RummiSet {
+
+  import play.api.libs.json._
+
+  implicit val writes = Json.writes[RummiSet]
+  implicit val reads = Json.reads[RummiSet]
+}

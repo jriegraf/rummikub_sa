@@ -128,3 +128,9 @@ case class Game(activePlayer: Player,
     }
   }
 }
+object Game {
+
+  import play.api.libs.json._
+
+  implicit val writes: OWrites[Game] = Json.writes[Game]
+}
