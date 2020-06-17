@@ -1,7 +1,7 @@
 version: '3'
 services:
   game_service:
-    image: jriegraf/rummi_game
+    image: rummi_game
     ports:
       - 8802:8802
     networks:
@@ -10,7 +10,7 @@ services:
           - game
 
   player_service:
-    image: jriegraf/rummi_player
+    image: rummi_player
     ports:
             - 8801:8801
     networks:
