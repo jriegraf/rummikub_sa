@@ -13,7 +13,9 @@ organization in ThisBuild := "JuPa.Software"
 
 lazy val global = project
   .in(file("."))
-  .settings(settings)
+  .settings(settings,
+    test in assembly := {}
+  )
   .aggregate(
     main,
     player,
@@ -25,7 +27,10 @@ lazy val main = project
   .settings(name := "main",
     settings,
     libraryDependencies ++= commonDependencies,
-    unmanagedBase := baseDirectory.value / "lib")
+    unmanagedBase := baseDirectory.value / "lib",
+    mainClass in assembly := Some("de.htwg.se.rummi.Rummi"),
+    assemblyJarName in assembly := "rummi.jar",
+  )
   .dependsOn(player, game)
 
 
@@ -33,15 +38,19 @@ lazy val player = project
   .settings(name := "player",
     settings,
     libraryDependencies ++= commonDependencies,
-    unmanagedBase := baseDirectory.value / "lib")
+    unmanagedBase := baseDirectory.value / "lib",
+    mainClass in assembly := Some("de.htwg.se.rummi.player_service.controller.Application")
+  )
   .dependsOn(model)
 
 lazy val game = project
   .settings(name := "game",
     settings,
     libraryDependencies ++= commonDependencies,
-    unmanagedBase := baseDirectory.value / "lib")
-  .dependsOn(model)
+    unmanagedBase := baseDirectory.value / "lib",
+    mainClass in assembly := Some("de.htwg.se.rummi.game_service.Application")
+  )
+      .dependsOn(model)
 
 lazy val model = project
   .settings(name := "model",
@@ -52,7 +61,6 @@ lazy val model = project
 
 
 // DEPENDENCIES
-
 lazy val dependencies =
   new {
     val logbackV = "1.2.3"
@@ -84,9 +92,11 @@ lazy val dependencies =
     val gguice = "com.google.inject" % "guice" % "4.1.0"
     val scalaguice = "net.codingwell" %% "scala-guice" % "4.1.0"
     val akkahttp = "com.typesafe.akka" %% "akka-http" % akkahttpV
+    val akkaplayjson = "de.heikoseeberger" %% "akka-http-circe" % "1.31.0"
   }
 
 lazy val commonDependencies = Seq(
+  dependencies.akkaplayjson,
   dependencies.akkahttp,
   dependencies.akka,
   dependencies.scalaXml,
@@ -108,6 +118,7 @@ lazy val commonDependencies = Seq(
 
 lazy val settings =
   commonSettings
+
 
 lazy val compilerOptions = Seq(
   "-unchecked",

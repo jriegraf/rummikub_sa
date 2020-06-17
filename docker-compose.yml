@@ -1,0 +1,19 @@
+version: '3'
+services:
+  game_service:
+    image: jriegraf/rummi_game
+    ports:
+      - 8802:8802
+    networks:
+      default:
+        aliases:
+          - game
+
+  player_service:
+    image: jriegraf/rummi_player
+    ports:
+            - 8801:8801
+    networks:
+      default:
+        aliases:
+          - player
