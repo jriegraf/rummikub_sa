@@ -1,8 +1,7 @@
 package de.htwg.se.rummi.main
 
 import com.google.inject.Guice
-import de.htwg.se.rummi.main.aview.swing.SwingGui
-import de.htwg.se.rummi.main.aview.{RestService, Tui}
+import de.htwg.se.rummi.main.aview.Tui
 import de.htwg.se.rummi.main.controller.ControllerInterface
 import de.htwg.se.rummi.model.model.Game
 
@@ -48,11 +47,11 @@ object Rummi {
     val tui = new Tui(controller, game)
     tui.printTui
 
-    val restService = new RestService(controller, game);
+    //val restService = new RestService(controller, game);
 
-    val gui = new SwingGui(controller, game)
-    gui.init
-    gui.visible = true
+    //val gui = new SwingGui(controller, game)
+    //gui.init
+    //gui.visible = true
 
     var input: String = ""
 

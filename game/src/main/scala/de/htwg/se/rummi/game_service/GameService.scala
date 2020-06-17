@@ -13,5 +13,5 @@ trait GameService {
 
   def draw(id: Long): Try[Game]
 
-  def moveTile(id: Long, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game]
+  def moveTile(id: Long, gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game]
 }

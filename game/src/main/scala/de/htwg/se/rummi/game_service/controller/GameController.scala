@@ -5,8 +5,8 @@ import java.util.NoSuchElementException
 import de.htwg.se.rummi.game_service.GameService
 import de.htwg.se.rummi.model.GameState.{DRAWN, GameState}
 import de.htwg.se.rummi.model.model._
+import de.htwg.se.rummi.model.util.{GridType, RACK}
 import de.htwg.se.rummi.model.{Const, FieldIsOccupiedException, model}
-import play.api.libs.json.Json
 
 import scala.util.{Failure, Success, Try}
 
@@ -70,11 +70,12 @@ class GameController() extends GameService {
     val game = new Game(players.head,
       Field.empty,
       coveredTiles,
-      players.map(p => PlayerParticipation(p, racks(players.indexOf(p)))), players.size
+      players.map(p => PlayerParticipation(p, racks(players.indexOf(p)))), games.size
     )
 
     games = games :+ game
-    games.foreach(g => println(Json.prettyPrint(Json.toJson(g))))
+    println(s"#games: ${games.size}")
+    games.foreach(g => println(s"id: ${g.id}"))
     Success(game)
   }
 
@@ -121,24 +122,22 @@ class GameController() extends GameService {
     players(nextPlayerIndex)
   }
 
-  override def moveTile(id: Long, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
+  override def moveTile(id: Long, gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
     games.find(game => game.id == id) match {
-      case Some(game) => moveTile(game, gridTo, tile, newRow, newCol)
+      case Some(game) => moveTile(game, gridFrom, gridTo, tile, newRow, newCol)
       case None => Failure(new NoSuchElementException("No such game!"))
     }
   }
 
-  def moveTile(game: Game, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
+  def moveTile(game: Game, from: GridType, to: GridType, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
 
-    var gridFrom: Grid = null
-    if (game.field.tiles.values.exists(t => t == tile)) {
-      gridFrom = game.field.asInstanceOf[Grid]
-    } else if (game.getRackOfActivePlayer.tiles.values.exists(t => t == tile)) {
-      gridFrom = game.getRackOfActivePlayer.asInstanceOf[Grid]
-    } else {
-      return Failure(new NoSuchElementException("Tile not found in rack."))
-    }
+    val gridFrom = if (from == RACK) game.getRackOfActivePlayer else game.field
+    val gridTo = if (to == RACK) game.getRackOfActivePlayer else game.field
 
+    moveTile(game, gridFrom, gridTo, tile, newRow, newCol)
+  }
+
+  private def moveTile(game: Game, gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
     moveTileImpl(gridFrom, gridTo, tile, newRow, newCol) match {
       case Failure(x) => Failure(x)
       case Success(x) => x match {
@@ -165,7 +164,8 @@ class GameController() extends GameService {
   }
 
   private def moveTileImpl(gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[(Grid, Grid)] = {
-    if (gridTo.getTileAt(newRow, newCol).isDefined) return Failure(new FieldIsOccupiedException)
+    if (gridTo.getTileAt(newRow, newCol).isDefined)
+      return Failure(new FieldIsOccupiedException(s"Can not move tile $tile because target field is occupied."))
 
     gridFrom.getTilePosition(tile) match {
       case Some(x) =>

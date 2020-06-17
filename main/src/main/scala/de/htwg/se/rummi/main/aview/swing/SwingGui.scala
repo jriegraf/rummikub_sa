@@ -5,6 +5,7 @@ import java.awt.Color
 import de.htwg.se.rummi.main.controller.ControllerInterface
 import de.htwg.se.rummi.model.GameState
 import de.htwg.se.rummi.model.model.Game
+import de.htwg.se.rummi.model.util.{FIELD, RACK}
 
 import scala.swing._
 import scala.swing.event.ButtonClicked
@@ -192,19 +193,19 @@ class SwingGui(co: ControllerInterface, var game: Game) extends MainFrame {
 
     var result: Try[Game] = null
     if (rack.containsField(selectedField.get) && field.containsField(clickedField)) {
-      result = co.moveTile(game, game.getRackOfActivePlayer, game.field, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
+      result = co.moveTile(game, RACK, FIELD, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
     }
 
     if (field.containsField(selectedField.get) && rack.containsField(clickedField)) {
-      result = co.moveTile(game, game.field, game.getRackOfActivePlayer, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
+      result = co.moveTile(game, FIELD, RACK, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
     }
 
     if (rack.containsField(selectedField.get) && rack.containsField(clickedField)) {
-      result = co.moveTile(game, game.getRackOfActivePlayer, game.getRackOfActivePlayer, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
+      result = co.moveTile(game, RACK, RACK, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
     }
 
     if (field.containsField(clickedField) && field.containsField(selectedField.get)) {
-      result = co.moveTile(game, game.field, game.field, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
+      result = co.moveTile(game, FIELD, FIELD, selectedField.get.tileOpt.get, clickedField.row, clickedField.col)
     }
 
     result match {

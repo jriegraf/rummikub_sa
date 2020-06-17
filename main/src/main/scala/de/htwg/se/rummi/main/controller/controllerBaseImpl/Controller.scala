@@ -10,7 +10,8 @@ import de.htwg.se.rummi.main.controller.ControllerInterface
 import de.htwg.se.rummi.main.util.UndoManager
 import de.htwg.se.rummi.model.Const._
 import de.htwg.se.rummi.model.GameState._
-import de.htwg.se.rummi.model.model.{Game, Grid, Player, Tile}
+import de.htwg.se.rummi.model.model._
+import de.htwg.se.rummi.model.util.GridType
 import de.htwg.se.rummi.model.{AlreadyDrawnException, FieldNotValidException, InvalidGameStateException}
 import de.htwg.se.rummi.player_service.controller.{PlayerController, PlayerService}
 
@@ -24,7 +25,7 @@ class Controller @Inject()() extends ControllerInterface {
   val fileIo: FileIoInterface = injector.getInstance(classOf[FileIoInterface])
 
   val gameController = new GameController()
-  val playerController : PlayerService = new PlayerController()
+  val playerController: PlayerService = new PlayerController()
 
   def createGame(playerNames: List[String]): Try[Game] = {
     if (playerNames == Nil) Failure(new NoSuchElementException())
@@ -63,7 +64,7 @@ class Controller @Inject()() extends ControllerInterface {
       return Failure(InvalidGameStateException("You can not draw and move tiles to the field."))
     }
 
-    if (game.gameState != DRAWN && game.countMovedTiles == 0){
+    if (game.gameState != DRAWN && game.countMovedTiles == 0) {
       return Failure(FieldNotValidException("You have to place at least one tile on the field or draw."))
     }
 
@@ -87,31 +88,40 @@ class Controller @Inject()() extends ControllerInterface {
     gameController.draw(game)
   }
 
+  private def getGridFrom(game: Game, tile: Tile): Try[Grid] = {
+    var gridFrom: Grid = null
+    if (game.field.tiles.values.exists(t => t == tile)) {
+      Success(game.field.asInstanceOf[Grid])
+    } else if (game.getRackOfActivePlayer.tiles.values.exists(t => t == tile)) {
+      Success(game.getRackOfActivePlayer.asInstanceOf[Grid])
+    } else {
+      Failure(new NoSuchElementException("Tile not found in rack."))
+    }
+  }
+
+  private def isInField(row: Int): Boolean = {
+    row <= GRID_ROWS
+  }
+
+  private def convertToRackRow(row: Int): Int = {
+    if (isInField(row)) row else row - GRID_ROWS
+  }
 
   def moveTile(game: Game, from: String, to: String): Try[Game] = {
-    val (f, t) = coordsToFields(from, to).getOrElse(throw new NoSuchElementException("No such field."))
+    val (coordFrom, coordTo) = coordsToFields(from, to).getOrElse(throw new NoSuchElementException("No such field."))
+
     val field = game.field
-    if (f._1 <= GRID_ROWS) {
-      val tile: Tile = field.getTileAt(f._1, f._2) match {
-        case Some(e) => e
-        case None => return Failure(new NoSuchElementException("There is no tile on field " + from))
-      }
-      if (t._1 <= GRID_ROWS) {
-        gameController.moveTile(game, field, tile, t._1, t._2)
-      } else {
-        gameController.moveTile(game, game.getRackOfActivePlayer, tile, t._1 - GRID_ROWS, t._2)
-      }
-    } else {
-      val tile = game.getRackOfActivePlayer.getTileAt(f._1 - GRID_ROWS, f._2) match {
-        case Some(e) => e
-        case None => return Failure(new NoSuchElementException("There is no tile on field " + from))
-      }
-      if (t._1 <= GRID_ROWS) {
-        gameController.moveTile(game, field, tile, t._1, t._2)
-      } else {
-        gameController.moveTile(game, game.getRackOfActivePlayer, tile, t._1 - GRID_ROWS, t._2)
-      }
+    val rack = game.getRackOfActivePlayer
+
+    val fromGrid: Grid = if (isInField(coordFrom._1)) field else rack
+    val toGrid: Grid = if (isInField(coordTo._1)) field else rack
+
+    val tile = fromGrid.getTileAt(convertToRackRow(coordFrom._1), coordFrom._2) match {
+      case Some(e) => e
+      case None => return Failure(new NoSuchElementException("There is no tile on field " + from))
     }
+
+    moveTile(game, fromGrid.getType, toGrid.getType, tile, convertToRackRow(coordTo._1), coordTo._2)
   }
 
   def toColNumber(col: Char): Option[Int] = {
@@ -143,8 +153,8 @@ class Controller @Inject()() extends ControllerInterface {
     Some((fromRow, fromCol), (toRow, toCol))
   }
 
-  def moveTile(game: Game, gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
-    undoManager.doStep(new MoveTileCommand(gridFrom, gridTo, tile, newRow, newCol, gameController, game)) match {
+  def moveTile(game: Game, gridFrom: GridType, gridTo: GridType, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
+    undoManager.doStep(MoveTileCommand(game, gridFrom, gridTo, tile, (newRow, newCol), gameController)) match {
       case Success(newGame) => setGameStateAfterMoveTile(newGame)
       case Failure(x) => Failure(x)
     }

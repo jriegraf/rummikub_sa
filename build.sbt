@@ -89,8 +89,8 @@ lazy val dependencies =
     val scalaswing = "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3"
     val scalacheck = "org.scalacheck" %% "scalacheck" % scalacheckV
     val json = "com.typesafe.play" %% "play-json" % "2.6.6"
-    val gguice = "com.google.inject" % "guice" % "4.1.0"
-    val scalaguice = "net.codingwell" %% "scala-guice" % "4.1.0"
+    val gguice = "com.google.inject" % "guice" % "4.2.3"
+    val scalaguice = "net.codingwell" %% "scala-guice" % "4.2.3"
     val akkahttp = "com.typesafe.akka" %% "akka-http" % akkahttpV
     val akkaplayjson = "de.heikoseeberger" %% "akka-http-circe" % "1.31.0"
   }

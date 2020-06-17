@@ -5,32 +5,48 @@ import de.htwg.se.rummi.model.Const._
 import de.htwg.se.rummi.model.model.{Game, Grid}
 
 import scala.swing.Reactor
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 class Tui(co: ControllerInterface, var game: Game) extends Reactor {
 
 
   listenTo(co)
 
-
   def processInputLine(input: String): Unit = {
     input match {
       case "q" =>
       case "e" => //controller.createEmptyGrid
       case "n" => //controller.createNewGrid
-      case "z" => co.undo(game)
-      case "y" => co.redo(game)
-      case "s" => print(co.save(game))
-      case "sort" => co.sortRack(game)
-      case "finish" => co.switchPlayer(game)
-      case "draw" => co.draw(game)
+      case "p" => printTui()
+      case "z" => updateGame(game, co.undo)
+      case "y" => updateGame(game, co.redo)
+      case "s" => println(co.save(game))
+      case "sort" => updateGame(game, co.sortRack)
+      case "finish" => updateGame(game, co.switchPlayer)
+      case "draw" => updateGame(game, co.draw)
       case _ => input.split(" ").toList match {
         case from :: _ :: to :: Nil => co.moveTile(game, from, to) match {
-          case Success(value) => game = value
-          case Failure(exception) => println(exception.getMessage)
+          case Success(value) => {
+            game = value
+            printTui()
+          }
+          case Failure(exception) => {
+            print("Failure: ")
+            println(exception.getMessage)
+          }
         }
         case _ => println("Can not parse input.")
       }
+    }
+  }
+
+  def updateGame(game: Game, fun: Game => Try[Game]): Unit = {
+    fun(game) match {
+      case Success(value) => {
+        this.game = value
+        printTui()
+      }
+      case Failure(exception) => println(exception.getMessage)
     }
   }
 
@@ -54,34 +70,6 @@ class Tui(co: ControllerInterface, var game: Game) extends Reactor {
     ((gridStrings :+ "\n _________________________________________\n") ::: rackStrings).foreach(x => println(x))
   }
 
-//  reactions += {
-//    case _: FieldChangedEvent => {
-//      printTui
-//    }
-//
-//    case _: ValidStateChangedEvent => {
-//      if (game.isValid) {
-//        println("TUI: Field is valid again.")
-//      } else {
-//        println("TUI: Field is not valid anymore.")
-//      }
-//    }
-//
-//    case _: PlayerSwitchedEvent => {
-//      println("It's " + game.activePlayer.name + "'s turn.")
-//      printTui
-//    }
-//
-//    case _: GameStateChanged => {
-//      game.gameState match {
-//        case GameState.WON => {
-//          println(("---- " + game.activePlayer + " wins! ----").toUpperCase)
-//        }
-//        case _ =>
-//      }
-//    }
-//  }
-
   def printGrid(grid: Grid, amountRows: Int): List[String] = {
 
     var rows: List[String] = Nil
@@ -101,6 +89,4 @@ class Tui(co: ControllerInterface, var game: Game) extends Reactor {
     }
     rows
   }
-
-
 }

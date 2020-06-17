@@ -1,5 +1,6 @@
 package de.htwg.se.rummi.model.model
 
+import de.htwg.se.rummi.model.util.{FIELD, GridType, RACK}
 import play.api.libs.json.{JsArray, JsNumber, JsObject, JsValue, Json, Writes}
 
 trait Grid {
@@ -35,6 +36,10 @@ trait Grid {
       case _: Field => Field(newTiles)
       case _: Rack => Rack(newTiles)
     }
+  }
+
+  def getType: GridType = {
+    if (this.isInstanceOf[Rack]) RACK else FIELD
   }
 
 }
