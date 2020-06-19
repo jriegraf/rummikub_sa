@@ -10,7 +10,6 @@ class UndoManager {
 
   def doStep(command: Command): Try[Game] = {
     undoStack = command :: undoStack
-    println("UndoStack: " + undoStack)
     command.doStep
   }
 
@@ -38,8 +37,8 @@ class UndoManager {
     }
   }
 
-  def clear() = {
-    redoStack = List.empty
-    undoStack = List.empty
+  def reset(): Unit = {
+    undoStack = Nil
+    redoStack = Nil
   }
 }

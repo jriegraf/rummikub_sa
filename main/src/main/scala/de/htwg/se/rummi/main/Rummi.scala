@@ -45,7 +45,6 @@ object Rummi {
     val game : Game = controller.createGame(playerNames).getOrElse(throw new Exception)
 
     val tui = new Tui(controller, game)
-    tui.printTui
 
     //val restService = new RestService(controller, game);
 
@@ -53,12 +52,6 @@ object Rummi {
     //gui.init
     //gui.visible = true
 
-    var input: String = ""
 
-    while (input != "q") {
-      print("\nrummi>")
-      input = StdIn.readLine()
-      tui.processInputLine(input)
-    }
   }
 }

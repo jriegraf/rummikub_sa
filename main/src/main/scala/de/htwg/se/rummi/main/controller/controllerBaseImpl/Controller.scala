@@ -12,7 +12,7 @@ import de.htwg.se.rummi.model.Const._
 import de.htwg.se.rummi.model.GameState._
 import de.htwg.se.rummi.model.model._
 import de.htwg.se.rummi.model.util.GridType
-import de.htwg.se.rummi.model.{AlreadyDrawnException, FieldNotValidException, InvalidGameStateException}
+import de.htwg.se.rummi.model.{AlreadyDrawnException, Const, FieldNotValidException, InvalidGameStateException}
 import de.htwg.se.rummi.player_service.controller.{PlayerController, PlayerService}
 
 import scala.util.{Failure, Success, Try}
@@ -68,12 +68,19 @@ class Controller @Inject()() extends ControllerInterface {
       return Failure(FieldNotValidException("You have to place at least one tile on the field or draw."))
     }
 
+    if (game.gameState == TO_LESS) {
+      return Failure(FieldNotValidException(s"For your first move, you must play a set or run with a " +
+        s"value of at least ${Const.MINIMUM_POINTS_FIRST_ROUND} points"))
+    }
+
     if (game.gameState != VALID && game.countMovedTiles > 0) {
       return Failure(FieldNotValidException("The Field ist not valid, resolve first."))
     }
 
     gameController.setActivePlayer(game, gameController.getNextActivePlayer(game)) match {
-      case Success(g) => gameController.setGameState(g, WAITING)
+      case Success(g) =>
+        undoManager.reset()
+        gameController.setGameState(g, WAITING)
       case Failure(x) => Failure(x)
     }
   }
@@ -108,7 +115,8 @@ class Controller @Inject()() extends ControllerInterface {
   }
 
   def moveTile(game: Game, from: String, to: String): Try[Game] = {
-    val (coordFrom, coordTo) = coordsToFields(from, to).getOrElse(throw new NoSuchElementException("No such field."))
+    val (coordFrom, coordTo) = coordsToFields(from, to).getOrElse(
+      return Failure(new NoSuchElementException("No such field.")))
 
     val field = game.field
     val rack = game.getRackOfActivePlayer

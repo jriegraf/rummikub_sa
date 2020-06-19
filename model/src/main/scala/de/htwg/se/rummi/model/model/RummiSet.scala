@@ -18,7 +18,7 @@ case class RummiSet(tiles: List[Tile]) {
       })
       .toBuffer
 
-    for (i <- 0 to tiles.size - 1) {
+    for (i <- tiles.indices) {
       if (buffer(i) == -1) {
         buffer.update(i, buffer(pivotIndex) - (pivotIndex - i))
       }
@@ -26,7 +26,7 @@ case class RummiSet(tiles: List[Tile]) {
     buffer.sum
   }
 
-  def isValidRun(): Boolean = {
+  def isValidRun: Boolean = {
     if (tiles.size < 3) return false
     if (tiles.groupBy(_.colour).size > 1 && tiles.count(x => x.joker) == 0) return false
     val n: List[Tile] = tiles.sortBy(_.number)
@@ -44,7 +44,7 @@ case class RummiSet(tiles: List[Tile]) {
         else t.number
       }).toBuffer
 
-      for (i <- 0 to tiles.size - 1) {
+      for (i <- tiles.indices) {
         if (buffer(i) == -1) {
           buffer.update(i, buffer(pivotIndex) - (pivotIndex - i))
         }
@@ -52,7 +52,7 @@ case class RummiSet(tiles: List[Tile]) {
       if (buffer.max > Const.highest_number || buffer.min < Const.lowest_number) {
         return false
       }
-      for (i <- 0 to tiles.size - 1) {
+      for (i <- tiles.indices) {
         if (buffer(i) != tiles(i).number && !tiles(i).joker) {
           return false
         }
@@ -72,7 +72,7 @@ case class RummiSet(tiles: List[Tile]) {
     true
   }
 
-  def isValidGroup(): Boolean = {
+  def isValidGroup: Boolean = {
     if (tiles.size < 3) return false
     if (tiles.size > 4) return false
     if (tiles.filter(x => !x.joker)
@@ -86,10 +86,11 @@ case class RummiSet(tiles: List[Tile]) {
     tiles.toStream.map(t => t.toString).mkString
   }
 }
+
 object RummiSet {
 
   import play.api.libs.json._
 
-  implicit val writes = Json.writes[RummiSet]
-  implicit val reads = Json.reads[RummiSet]
+  implicit val writes: OWrites[RummiSet] = Json.writes[RummiSet]
+  implicit val reads: Reads[RummiSet] = Json.reads[RummiSet]
 }

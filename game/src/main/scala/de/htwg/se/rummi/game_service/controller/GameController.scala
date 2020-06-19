@@ -45,7 +45,7 @@ class GameController() extends GameService {
 
     coveredTiles = scala.util.Random.shuffle(coveredTiles)
 
-    players.foreach(p => {
+    players.foreach(_ => {
       // Take 14 tiles and add them to the rack of the player
       var tilesAddToRack = coveredTiles.take(Const.NUMBER_OF_INITIAL_RACK_TILES)
 
@@ -74,8 +74,6 @@ class GameController() extends GameService {
     )
 
     games = games :+ game
-    println(s"#games: ${games.size}")
-    games.foreach(g => println(s"id: ${g.id}"))
     Success(game)
   }
 
@@ -109,7 +107,7 @@ class GameController() extends GameService {
   }
 
   def setActivePlayer(game: Game, player: Player): Try[Game] = {
-    val newGame = game.copy(activePlayer = player)
+    val newGame = game.copy(activePlayer = player).copy(movedTiles = Nil)
     returnSuccess(game, newGame)
   }
 
@@ -137,15 +135,25 @@ class GameController() extends GameService {
     moveTile(game, gridFrom, gridTo, tile, newRow, newCol)
   }
 
+  private def checkCoordInBounds(row: Int, col: Int, grid: Grid): Boolean = {
+    if (row > grid.rows) return false
+    if (col > grid.cols) return false
+    true
+  }
+
   private def moveTile(game: Game, gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
+
+    if (checkCoordInBounds(newRow, newCol, gridTo))
+      return Failure(new IllegalArgumentException("Coords not in grid bounds."))
+
     moveTileImpl(gridFrom, gridTo, tile, newRow, newCol) match {
       case Failure(x) => Failure(x)
-      case Success(x) => x match {
+      case Success(newGrids) => newGrids match {
         case (field: Field, rack: Rack) =>
           val part = game.getParticipationOfActivePlayer.copy(rack = rack)
           val newGame = game.updateParticipationOfActivePlayer(part)
             .copy(field = field)
-            .copy(turn = game.turn.copy(movedTiles = game.turn.movedTiles.filter(x => x != tile)))
+            .copy(movedTiles = game.movedTiles.filter(x => x != tile))
           returnSuccess(game, newGame)
         case (field: Field, _: Field) =>
           returnSuccess(game, game.copy(field = field))
@@ -154,7 +162,7 @@ class GameController() extends GameService {
           val part = game.getParticipationOfActivePlayer.copy(rack = rack)
           val newGame = game.updateParticipationOfActivePlayer(part)
             .copy(field = field)
-            .copy(turn = game.turn.copy(movedTiles = game.turn.movedTiles :+ tile))
+            .copy(movedTiles = game.movedTiles :+ tile)
           returnSuccess(game, newGame)
         case (rack: Rack, _: Rack) =>
           val part = game.getParticipationOfActivePlayer.copy(rack = rack)
@@ -165,7 +173,7 @@ class GameController() extends GameService {
 
   private def moveTileImpl(gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[(Grid, Grid)] = {
     if (gridTo.getTileAt(newRow, newCol).isDefined)
-      return Failure(new FieldIsOccupiedException(s"Can not move tile $tile because target field is occupied."))
+      return Failure(FieldIsOccupiedException(s"Can not move tile $tile because target field is occupied."))
 
     gridFrom.getTilePosition(tile) match {
       case Some(x) =>

@@ -7,18 +7,10 @@ case class Game(activePlayer: Player,
                 field: Field,
                 coveredTiles: List[Tile],
                 playerParticipations: List[PlayerParticipation],
-                turn: Turn,
                 id: Long,
+                movedTiles: List[Tile] = Nil,
                 gameState: GameState = WAITING) {
 
-
-  def this(activePlayer: Player,
-           field: Field,
-           coveredTiles: List[Tile],
-           playerParticipations: List[PlayerParticipation],
-           id: Int) {
-    this(activePlayer, field, coveredTiles, playerParticipations, Turn.empty(activePlayer), id, WAITING)
-  }
 
   def isPlayerInFirstRound(player: Player) = {
     playerParticipations.find(p => p.player == player).map(p => p.inFirstRound) match {
@@ -45,7 +37,7 @@ case class Game(activePlayer: Player,
   }
 
   def countMovedTiles: Int = {
-    turn.movedTiles.size
+    movedTiles.size
   }
 
   def extractSets(): List[RummiSet] = {
@@ -114,7 +106,7 @@ case class Game(activePlayer: Player,
   def doesPlayerReachedMinLayOutPoints: Boolean = {
     val sumOfFirstMove = extractSets()
       // only use Sets, which contains tiles moved by this player in this round
-      .filter(x => x.tiles.toSet.intersect(turn.movedTiles.toSet).nonEmpty)
+      .filter(x => x.tiles.toSet.intersect(movedTiles.toSet).nonEmpty)
       .map(x => x.getPoints)
       .sum
 
