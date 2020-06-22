@@ -9,19 +9,13 @@
     "tiles" : [ ]
   },
   "coveredTiles" : [ {
-    "number" : 3,
+    "number" : 9,
     "color" : {
-      "name" : "RED"
+      "name" : "YELLOW"
     },
     "joker" : false
   }, {
-    "number" : 12,
-    "color" : {
-      "name" : "BLUE"
-    },
-    "joker" : false
-  }, {
-    "number" : 4,
+    "number" : 6,
     "color" : {
       "name" : "BLUE"
     },
@@ -29,53 +23,29 @@
   }, {
     "number" : 13,
     "color" : {
-      "name" : "RED"
+      "name" : "YELLOW"
     },
     "joker" : false
   }, {
-    "number" : 7,
-    "color" : {
-      "name" : "BLUE"
-    },
-    "joker" : false
-  }, {
-    "number" : 8,
+    "number" : 11,
     "color" : {
       "name" : "GREEN"
     },
     "joker" : false
   }, {
-    "number" : 9,
-    "color" : {
-      "name" : "RED"
-    },
-    "joker" : false
-  }, {
-    "number" : 8,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
-    "number" : 3,
+    "number" : 11,
     "color" : {
       "name" : "YELLOW"
     },
     "joker" : false
   }, {
-    "number" : 12,
+    "number" : 13,
     "color" : {
       "name" : "YELLOW"
     },
     "joker" : false
   }, {
-    "number" : 1,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
-    "number" : 7,
+    "number" : 10,
     "color" : {
       "name" : "GREEN"
     },
@@ -87,13 +57,37 @@
     },
     "joker" : false
   }, {
-    "number" : 1,
+    "number" : 12,
     "color" : {
-      "name" : "BLUE"
+      "name" : "GREEN"
+    },
+    "joker" : false
+  }, {
+    "number" : 3,
+    "color" : {
+      "name" : "YELLOW"
     },
     "joker" : false
   }, {
     "number" : 13,
+    "color" : {
+      "name" : "GREEN"
+    },
+    "joker" : false
+  }, {
+    "number" : 9,
+    "color" : {
+      "name" : "RED"
+    },
+    "joker" : false
+  }, {
+    "number" : 7,
+    "color" : {
+      "name" : "GREEN"
+    },
+    "joker" : false
+  }, {
+    "number" : 3,
     "color" : {
       "name" : "BLUE"
     },
@@ -105,7 +99,31 @@
     },
     "joker" : false
   }, {
-    "number" : 9,
+    "number" : 10,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 1,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 1,
+    "color" : {
+      "name" : "YELLOW"
+    },
+    "joker" : false
+  }, {
+    "number" : 6,
+    "color" : {
+      "name" : "GREEN"
+    },
+    "joker" : false
+  }, {
+    "number" : 4,
     "color" : {
       "name" : "GREEN"
     },
@@ -113,13 +131,43 @@
   }, {
     "number" : 1,
     "color" : {
+      "name" : "RED"
+    },
+    "joker" : false
+  }, {
+    "number" : 8,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 7,
+    "color" : {
+      "name" : "RED"
+    },
+    "joker" : false
+  }, {
+    "number" : 1,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 8,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 8,
+    "color" : {
       "name" : "YELLOW"
     },
     "joker" : false
   }, {
-    "number" : 10,
+    "number" : 7,
     "color" : {
-      "name" : "RED"
+      "name" : "YELLOW"
     },
     "joker" : false
   }, {
@@ -129,13 +177,103 @@
     },
     "joker" : false
   }, {
+    "number" : 8,
+    "color" : {
+      "name" : "GREEN"
+    },
+    "joker" : false
+  }, {
+    "number" : 6,
+    "color" : {
+      "name" : "YELLOW"
+    },
+    "joker" : false
+  }, {
+    "number" : 3,
+    "color" : {
+      "name" : "YELLOW"
+    },
+    "joker" : false
+  }, {
+    "number" : 11,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 2,
+    "color" : {
+      "name" : "YELLOW"
+    },
+    "joker" : false
+  }, {
+    "number" : 11,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 9,
+    "color" : {
+      "name" : "YELLOW"
+    },
+    "joker" : false
+  }, {
+    "number" : 2,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 5,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 5,
+    "color" : {
+      "name" : "YELLOW"
+    },
+    "joker" : false
+  }, {
+    "number" : 1,
+    "color" : {
+      "name" : "WHITE"
+    },
+    "joker" : true
+  }, {
+    "number" : 5,
+    "color" : {
+      "name" : "GREEN"
+    },
+    "joker" : false
+  }, {
+    "number" : 2,
+    "color" : {
+      "name" : "RED"
+    },
+    "joker" : false
+  }, {
+    "number" : 12,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 2,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
     "number" : 13,
     "color" : {
       "name" : "BLUE"
     },
     "joker" : false
   }, {
-    "number" : 10,
+    "number" : 6,
     "color" : {
       "name" : "BLUE"
     },
@@ -147,7 +285,31 @@
     },
     "joker" : false
   }, {
-    "number" : 4,
+    "number" : 6,
+    "color" : {
+      "name" : "RED"
+    },
+    "joker" : false
+  }, {
+    "number" : 8,
+    "color" : {
+      "name" : "GREEN"
+    },
+    "joker" : false
+  }, {
+    "number" : 5,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 9,
+    "color" : {
+      "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 9,
     "color" : {
       "name" : "BLUE"
     },
@@ -159,51 +321,111 @@
     },
     "joker" : false
   }, {
-    "number" : 6,
+    "number" : 12,
     "color" : {
       "name" : "YELLOW"
     },
     "joker" : false
   }, {
-    "number" : 5,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
-    "number" : 5,
+    "number" : 12,
     "color" : {
       "name" : "YELLOW"
     },
     "joker" : false
   }, {
-    "number" : 7,
+    "number" : 4,
+    "color" : {
+      "name" : "YELLOW"
+    },
+    "joker" : false
+  }, {
+    "number" : 3,
     "color" : {
       "name" : "RED"
     },
     "joker" : false
   }, {
-    "number" : 6,
+    "number" : 10,
     "color" : {
       "name" : "BLUE"
     },
     "joker" : false
   }, {
-    "number" : 11,
+    "number" : 3,
     "color" : {
       "name" : "BLUE"
+    },
+    "joker" : false
+  }, {
+    "number" : 7,
+    "color" : {
+      "name" : "YELLOW"
+    },
+    "joker" : false
+  }, {
+    "number" : 5,
+    "color" : {
+      "name" : "RED"
+    },
+    "joker" : false
+  }, {
+    "number" : 4,
+    "color" : {
+      "name" : "RED"
     },
     "joker" : false
   }, {
     "number" : 8,
     "color" : {
+      "name" : "YELLOW"
+    },
+    "joker" : false
+  }, {
+    "number" : 5,
+    "color" : {
+      "name" : "RED"
+    },
+    "joker" : false
+  }, {
+    "number" : 6,
+    "color" : {
+      "name" : "GREEN"
+    },
+    "joker" : false
+  }, {
+    "number" : 2,
+    "color" : {
+      "name" : "YELLOW"
+    },
+    "joker" : false
+  }, {
+    "number" : 3,
+    "color" : {
+      "name" : "GREEN"
+    },
+    "joker" : false
+  }, {
+    "number" : 1,
+    "color" : {
       "name" : "RED"
     },
     "joker" : false
   }, {
     "number" : 7,
     "color" : {
-      "name" : "GREEN"
+      "name" : "RED"
+    },
+    "joker" : false
+  }, {
+    "number" : 12,
+    "color" : {
+      "name" : "RED"
+    },
+    "joker" : false
+  }, {
+    "number" : 4,
+    "color" : {
+      "name" : "BLUE"
     },
     "joker" : false
   }, {
@@ -213,67 +435,19 @@
     },
     "joker" : true
   }, {
-    "number" : 10,
-    "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 6,
-    "color" : {
-      "name" : "RED"
-    },
-    "joker" : false
-  }, {
-    "number" : 12,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
-    "number" : 9,
-    "color" : {
-      "name" : "BLUE"
-    },
-    "joker" : false
-  }, {
-    "number" : 3,
-    "color" : {
-      "name" : "BLUE"
-    },
-    "joker" : false
-  }, {
-    "number" : 2,
-    "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 2,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
-    "number" : 5,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
     "number" : 13,
     "color" : {
-      "name" : "YELLOW"
+      "name" : "GREEN"
     },
     "joker" : false
   }, {
     "number" : 1,
     "color" : {
-      "name" : "RED"
+      "name" : "GREEN"
     },
     "joker" : false
   }, {
-    "number" : 5,
+    "number" : 12,
     "color" : {
       "name" : "BLUE"
     },
@@ -281,197 +455,23 @@
   }, {
     "number" : 10,
     "color" : {
-      "name" : "RED"
+      "name" : "GREEN"
     },
     "joker" : false
   }, {
     "number" : 4,
     "color" : {
-      "name" : "RED"
-    },
-    "joker" : false
-  }, {
-    "number" : 5,
-    "color" : {
       "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 12,
-    "color" : {
-      "name" : "RED"
-    },
-    "joker" : false
-  }, {
-    "number" : 12,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
-    "number" : 1,
-    "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 10,
-    "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 10,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
-    "number" : 3,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
-    "number" : 7,
-    "color" : {
-      "name" : "BLUE"
-    },
-    "joker" : false
-  }, {
-    "number" : 4,
-    "color" : {
-      "name" : "GREEN"
     },
     "joker" : false
   }, {
     "number" : 9,
     "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 6,
-    "color" : {
-      "name" : "BLUE"
-    },
-    "joker" : false
-  }, {
-    "number" : 12,
-    "color" : {
-      "name" : "BLUE"
+      "name" : "GREEN"
     },
     "joker" : false
   }, {
     "number" : 8,
-    "color" : {
-      "name" : "RED"
-    },
-    "joker" : false
-  }, {
-    "number" : 5,
-    "color" : {
-      "name" : "BLUE"
-    },
-    "joker" : false
-  }, {
-    "number" : 4,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
-    "number" : 9,
-    "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 3,
-    "color" : {
-      "name" : "RED"
-    },
-    "joker" : false
-  }, {
-    "number" : 7,
-    "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 4,
-    "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 7,
-    "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 7,
-    "color" : {
-      "name" : "RED"
-    },
-    "joker" : false
-  }, {
-    "number" : 4,
-    "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 13,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
-    "number" : 6,
-    "color" : {
-      "name" : "RED"
-    },
-    "joker" : false
-  }, {
-    "number" : 5,
-    "color" : {
-      "name" : "RED"
-    },
-    "joker" : false
-  }, {
-    "number" : 2,
-    "color" : {
-      "name" : "BLUE"
-    },
-    "joker" : false
-  }, {
-    "number" : 9,
-    "color" : {
-      "name" : "GREEN"
-    },
-    "joker" : false
-  }, {
-    "number" : 12,
-    "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 1,
-    "color" : {
-      "name" : "BLUE"
-    },
-    "joker" : false
-  }, {
-    "number" : 13,
-    "color" : {
-      "name" : "YELLOW"
-    },
-    "joker" : false
-  }, {
-    "number" : 9,
     "color" : {
       "name" : "RED"
     },
@@ -489,7 +489,7 @@
         "row" : 1,
         "col" : 8,
         "tile" : {
-          "number" : 13,
+          "number" : 3,
           "color" : {
             "name" : "GREEN"
           },
@@ -499,7 +499,7 @@
         "row" : 1,
         "col" : 5,
         "tile" : {
-          "number" : 3,
+          "number" : 11,
           "color" : {
             "name" : "GREEN"
           },
@@ -509,27 +509,7 @@
         "row" : 1,
         "col" : 6,
         "tile" : {
-          "number" : 3,
-          "color" : {
-            "name" : "YELLOW"
-          },
-          "joker" : false
-        }
-      }, {
-        "row" : 1,
-        "col" : 11,
-        "tile" : {
-          "number" : 10,
-          "color" : {
-            "name" : "BLUE"
-          },
-          "joker" : false
-        }
-      }, {
-        "row" : 1,
-        "col" : 12,
-        "tile" : {
-          "number" : 5,
+          "number" : 9,
           "color" : {
             "name" : "RED"
           },
@@ -537,9 +517,29 @@
         }
       }, {
         "row" : 1,
+        "col" : 11,
+        "tile" : {
+          "number" : 9,
+          "color" : {
+            "name" : "GREEN"
+          },
+          "joker" : false
+        }
+      }, {
+        "row" : 1,
+        "col" : 12,
+        "tile" : {
+          "number" : 10,
+          "color" : {
+            "name" : "YELLOW"
+          },
+          "joker" : false
+        }
+      }, {
+        "row" : 1,
         "col" : 1,
         "tile" : {
-          "number" : 1,
+          "number" : 11,
           "color" : {
             "name" : "RED"
           },
@@ -549,9 +549,9 @@
         "row" : 1,
         "col" : 10,
         "tile" : {
-          "number" : 2,
+          "number" : 6,
           "color" : {
-            "name" : "YELLOW"
+            "name" : "RED"
           },
           "joker" : false
         }
@@ -559,7 +559,7 @@
         "row" : 1,
         "col" : 9,
         "tile" : {
-          "number" : 8,
+          "number" : 7,
           "color" : {
             "name" : "BLUE"
           },
@@ -569,9 +569,9 @@
         "row" : 1,
         "col" : 4,
         "tile" : {
-          "number" : 11,
+          "number" : 12,
           "color" : {
-            "name" : "YELLOW"
+            "name" : "GREEN"
           },
           "joker" : false
         }
@@ -579,17 +579,17 @@
         "row" : 1,
         "col" : 3,
         "tile" : {
-          "number" : 1,
+          "number" : 4,
           "color" : {
-            "name" : "WHITE"
+            "name" : "GREEN"
           },
-          "joker" : true
+          "joker" : false
         }
       }, {
         "row" : 1,
         "col" : 13,
         "tile" : {
-          "number" : 8,
+          "number" : 10,
           "color" : {
             "name" : "YELLOW"
           },
@@ -599,7 +599,7 @@
         "row" : 1,
         "col" : 7,
         "tile" : {
-          "number" : 10,
+          "number" : 1,
           "color" : {
             "name" : "GREEN"
           },
@@ -609,9 +609,9 @@
         "row" : 1,
         "col" : 2,
         "tile" : {
-          "number" : 8,
+          "number" : 13,
           "color" : {
-            "name" : "BLUE"
+            "name" : "RED"
           },
           "joker" : false
         }
@@ -619,7 +619,7 @@
         "row" : 2,
         "col" : 1,
         "tile" : {
-          "number" : 6,
+          "number" : 5,
           "color" : {
             "name" : "GREEN"
           },
@@ -641,17 +641,7 @@
         "row" : 1,
         "col" : 8,
         "tile" : {
-          "number" : 8,
-          "color" : {
-            "name" : "YELLOW"
-          },
-          "joker" : false
-        }
-      }, {
-        "row" : 1,
-        "col" : 5,
-        "tile" : {
-          "number" : 4,
+          "number" : 12,
           "color" : {
             "name" : "RED"
           },
@@ -659,9 +649,19 @@
         }
       }, {
         "row" : 1,
+        "col" : 5,
+        "tile" : {
+          "number" : 1,
+          "color" : {
+            "name" : "YELLOW"
+          },
+          "joker" : false
+        }
+      }, {
+        "row" : 1,
         "col" : 6,
         "tile" : {
-          "number" : 2,
+          "number" : 4,
           "color" : {
             "name" : "BLUE"
           },
@@ -671,9 +671,9 @@
         "row" : 1,
         "col" : 11,
         "tile" : {
-          "number" : 1,
+          "number" : 5,
           "color" : {
-            "name" : "GREEN"
+            "name" : "YELLOW"
           },
           "joker" : false
         }
@@ -681,7 +681,7 @@
         "row" : 1,
         "col" : 12,
         "tile" : {
-          "number" : 2,
+          "number" : 10,
           "color" : {
             "name" : "RED"
           },
@@ -691,9 +691,9 @@
         "row" : 1,
         "col" : 1,
         "tile" : {
-          "number" : 3,
+          "number" : 4,
           "color" : {
-            "name" : "BLUE"
+            "name" : "RED"
           },
           "joker" : false
         }
@@ -701,9 +701,9 @@
         "row" : 1,
         "col" : 10,
         "tile" : {
-          "number" : 11,
+          "number" : 10,
           "color" : {
-            "name" : "BLUE"
+            "name" : "RED"
           },
           "joker" : false
         }
@@ -711,7 +711,7 @@
         "row" : 1,
         "col" : 9,
         "tile" : {
-          "number" : 11,
+          "number" : 2,
           "color" : {
             "name" : "GREEN"
           },
@@ -721,16 +721,6 @@
         "row" : 1,
         "col" : 4,
         "tile" : {
-          "number" : 11,
-          "color" : {
-            "name" : "GREEN"
-          },
-          "joker" : false
-        }
-      }, {
-        "row" : 1,
-        "col" : 3,
-        "tile" : {
           "number" : 6,
           "color" : {
             "name" : "YELLOW"
@@ -739,9 +729,19 @@
         }
       }, {
         "row" : 1,
+        "col" : 3,
+        "tile" : {
+          "number" : 7,
+          "color" : {
+            "name" : "BLUE"
+          },
+          "joker" : false
+        }
+      }, {
+        "row" : 1,
         "col" : 13,
         "tile" : {
-          "number" : 9,
+          "number" : 13,
           "color" : {
             "name" : "BLUE"
           },
@@ -751,9 +751,9 @@
         "row" : 1,
         "col" : 7,
         "tile" : {
-          "number" : 12,
+          "number" : 7,
           "color" : {
-            "name" : "RED"
+            "name" : "GREEN"
           },
           "joker" : false
         }
@@ -761,7 +761,7 @@
         "row" : 1,
         "col" : 2,
         "tile" : {
-          "number" : 11,
+          "number" : 8,
           "color" : {
             "name" : "RED"
           },
@@ -771,9 +771,9 @@
         "row" : 2,
         "col" : 1,
         "tile" : {
-          "number" : 6,
+          "number" : 3,
           "color" : {
-            "name" : "GREEN"
+            "name" : "RED"
           },
           "joker" : false
         }

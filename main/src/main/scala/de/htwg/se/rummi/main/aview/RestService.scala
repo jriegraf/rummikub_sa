@@ -23,7 +23,9 @@ class RestService(controller: ControllerInterface, var game: Game) {
       complete(HttpEntity(ContentTypes.`application/json`, new JsonFileIo().gameToJson(game)))
     }
   }
-  val bindingFuture: Future[Http.ServerBinding] = Http().bindAndHandle(route, "localhost", 8080)
+
+  val bindingFuture: Future[Http.ServerBinding] = Http().bindAndHandle(route, "0.0.0.0", 8800)
+  bindingFuture.foreach(f => println(s"RestService online at ${f.localAddress}"))
 
   def unbind(): Unit = {
     bindingFuture
