@@ -22,3 +22,6 @@ after_success: "sbt coverageReport coveralls"
 deploy:
   provider: script
   script: bash docker_push.sh
+  on:
+    tags: false
+    all_branches: true
