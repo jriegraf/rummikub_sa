@@ -1,6 +1,6 @@
 package de.htwg.se.rummi.model.model
 
-case class Tile(number: Int, colour: RummiColour, joker : Boolean = false) {
+case class Tile(number: Int, color: RummiColor, joker: Boolean = false) {
 
   // Necessary because there are the same tiles that we want to differentiate
   override def equals(that: Any): Boolean = {
@@ -11,11 +11,8 @@ case class Tile(number: Int, colour: RummiColour, joker : Boolean = false) {
   }
 
   override def toString: String = {
-    if (joker) {
-      WHITE.stringInColor("J")
-    } else {
-      colour.stringInColor(number.toString)
-    }
+    if (joker) "(JOKER)" else s"(${number}, ${color})"
+
   }
 }
 

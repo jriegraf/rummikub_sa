@@ -1,7 +1,7 @@
 package de.htwg.se.rummi.model.model
 
 import de.htwg.se.rummi.model.util.{FIELD, GridType, RACK}
-import play.api.libs.json.{JsArray, JsNumber, JsObject, JsValue, Json, Writes}
+import play.api.libs.json._
 
 trait Grid {
 
@@ -9,17 +9,17 @@ trait Grid {
   val cols: Int
   val tiles: Map[(Int, Int), Tile]
 
-  def getRows = rows
+  def getRows: Int = rows
 
-  def getCols = cols
+  def getCols: Int = cols
 
-  def getTiles = tiles
+  def getTiles: Map[(Int, Int), Tile] = tiles
 
   def getTileAt(row: Int, col: Int): Option[Tile] = {
     tiles.get((row, col))
   }
 
-  def getFreeField(): Option[(Int, Int)] = {
+  def getFreeField: Option[(Int, Int)] = {
     (1 to rows).flatMap(a => (1 to cols).map(b => (a, b)))
       .map(t => (t, getTileAt(t._1, t._2)))
       .find(t => t._2.isEmpty)

@@ -20,7 +20,7 @@ class Field(val row: Int, val col: Int) extends Button {
 
     tileOpt = Some(tile)
 
-    background = tile.colour match {
+    background = tile.color match {
       case YELLOW => Color.decode("#FFFF33")
       case GREEN => Color.decode("#90EE90")
       case BLUE => Color.decode("#add8e6")

@@ -85,13 +85,12 @@ class GameController() extends GameService {
     }
   }
 
-
   def draw(game: Game): Try[Game] = {
     val newTile = game.coveredTiles.head
 
     val p = game.playerParticipations.filter(p => p.player == game.activePlayer).head
 
-    val newRack = p.rack.getFreeField() match {
+    val newRack = p.rack.getFreeField match {
       case Some(freeField) => p.rack.copy(tiles = p.rack.tiles + (freeField -> newTile))
       case None => throw new NoSuchElementException("No space in rack left.")
     }

@@ -9,12 +9,30 @@ class TileSpec extends WordSpec with Matchers {
 
     val tileBlueFour = Tile(4, BLUE, false)
 
-    "convert to xml" in {
-
+    "convert to json" in {
+      val jsonString = Json.prettyPrint(Json.toJson(tileBlueFour))
+      jsonString should be ("""{
+                              |  "number" : 4,
+                              |  "color" : {
+                              |    "name" : "BLUE"
+                              |  },
+                              |  "joker" : false
+                              |}""".stripMargin)
     }
 
-    "convert to json" in {
+    "convert from json" in {
+      val json = """{
+                   |  "number" : 4,
+                   |  "color" : {
+                   |    "name" : "BLUE"
+                   |  },
+                   |  "joker" : false
+                   |}""".stripMargin
 
+      val tile = Json.parse(json).as[Tile]
+      tile.number  should be (4)
+      tile.color should be (BLUE)
+      tile.joker should be (false)
     }
 
     "equals compares by reference, not by value" in {
@@ -26,16 +44,12 @@ class TileSpec extends WordSpec with Matchers {
       tileBlueFour equals "some random string" should be(false)
     }
 
-    "toString converts to a ansi colorized output of the number" in {
-      val ansiColorBlue = "\u001B[34m"
-      val ansiColorReset = "\u001B[0m"
-      tileBlueFour.toString should be(ansiColorBlue + "4" + ansiColorReset)
+    "toString converts to a nice output of the number and color" in {
+      tileBlueFour.toString should be("(4, BLUE)")
     }
 
     "if tile is a joker, it should print a white 'J'" in {
-      val ansiColorWhite = "\u001B[37m"
-      val ansiColorReset = "\u001B[0m"
-      Tile(2342, RED, true).toString should be(ansiColorWhite + "J" + ansiColorReset)
+      Tile(2342, RED, true).toString should be("(JOKER)")
     }
 
   }

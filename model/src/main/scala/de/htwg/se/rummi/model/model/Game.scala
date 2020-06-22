@@ -43,28 +43,26 @@ case class Game(activePlayer: Player,
   def extractSets(): List[RummiSet] = {
     var sets: List[RummiSet] = Nil
 
-    field.tiles.groupBy(x => x._1._1)
-      .map(x => x._2)
-      .foreach(map => {
+    field.tiles.groupBy(x => x._1._1).values.foreach(map => {
 
-        var list = map.map(x => (x._1._2, x._2))
-          .toList
-          .sortBy(x => x._1)
+      var list = map.map(x => (x._1._2, x._2))
+        .toList
+        .sortBy(x => x._1)
 
-        while (list.nonEmpty) {
-          var tiles: List[Tile] = List.empty
-          tiles = list.head._2 :: tiles
+      while (list.nonEmpty) {
+        var tiles: List[Tile] = List.empty
+        tiles = list.head._2 :: tiles
 
-          while (list.exists(x => x._1 == list.head._1 + 1)) {
-            list = list.drop(1)
-            tiles = list.head._2 :: tiles
-          }
-
-          sets = RummiSet(tiles.reverse) :: sets
+        while (list.exists(x => x._1 == list.head._1 + 1)) {
           list = list.drop(1)
+          tiles = list.head._2 :: tiles
         }
 
-      })
+        sets = RummiSet(tiles.reverse) :: sets
+        list = list.drop(1)
+      }
+
+    })
     sets
   }
 
@@ -93,8 +91,8 @@ case class Game(activePlayer: Player,
 
   def isValid: Boolean = {
     extractSets()
-      .filter(s => !s.isValidGroup())
-      .forall(s => s.isValidRun())
+      .filter(s => !s.isValidGroup)
+      .forall(s => s.isValidRun)
   }
 
   /**
@@ -120,9 +118,12 @@ case class Game(activePlayer: Player,
     }
   }
 }
+
 object Game {
 
   import play.api.libs.json._
 
   implicit val writes: OWrites[Game] = Json.writes[Game]
+  implicit val reads: Reads[Game] = Json.reads[Game]
+
 }

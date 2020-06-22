@@ -7,4 +7,6 @@ object PlayerParticipation {
   import play.api.libs.json._
 
   implicit val writes: OWrites[PlayerParticipation] = Json.writes[PlayerParticipation]
+  implicit val tileReads: Reads[PlayerParticipation] = Json.reads[PlayerParticipation]
+
 }

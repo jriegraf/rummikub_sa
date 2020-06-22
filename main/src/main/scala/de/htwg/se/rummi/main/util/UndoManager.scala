@@ -16,24 +16,22 @@ class UndoManager {
   def undoStep: Try[Game] = {
     undoStack match {
       case Nil => Failure(new Exception("Undo stack is empty."))
-      case head :: stack => {
+      case head :: stack =>
         val ret = head.undoStep
         undoStack = stack
         redoStack = head :: redoStack
         ret
-      }
     }
   }
 
   def redoStep: Try[Game] = {
     redoStack match {
       case Nil => Failure(new Exception("Redo stack is empty."))
-      case head :: stack => {
+      case head :: stack =>
         val ret = head.redoStep
         redoStack = stack
         undoStack = head :: undoStack
         ret
-      }
     }
   }
 

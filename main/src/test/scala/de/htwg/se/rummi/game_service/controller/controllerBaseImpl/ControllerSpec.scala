@@ -1,7 +1,6 @@
 package de.htwg.se.rummi.game_service.controller.controllerBaseImpl
 
 import de.htwg.se.rummi.game_service.controller.fileIoComponent.jsonImpl.JsonFileIo
-import de.htwg.se.rummi.game_service.controller.fileIoComponent.xmlFileIo.XmlFileIo
 import de.htwg.se.rummi.main.controller.controllerBaseImpl.Controller
 import de.htwg.se.rummi.model.model.{BLUE, GREEN, RED, RummiSet, Tile, WHITE, YELLOW}
 import org.scalatest.{Matchers, WordSpec}
@@ -151,18 +150,6 @@ class ControllerSpec extends WordSpec with Matchers {
         }
       }
 
-    }
-
-    "return the serialized game in xml format" in {
-
-      controller.createGame("p1" :: "p2" :: Nil) match {
-        case Failure(exception) =>
-        case Success(game) => {
-          val fileIo = new XmlFileIo();
-//          val xml = fileIo.save(game)
-//          xml shouldNot(be(""))
-        }
-      }
     }
   }
 

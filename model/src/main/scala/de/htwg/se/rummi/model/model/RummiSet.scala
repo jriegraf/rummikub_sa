@@ -12,11 +12,9 @@ case class RummiSet(tiles: List[Tile]) {
 
     val pivotIndex = tiles.indexOf(pivotTile)
 
-    val buffer = tiles
-      .map(t => {
-        if (t.joker) -1 else t.number
-      })
-      .toBuffer
+    val buffer = tiles.map(t => {
+      if (t.joker) -1 else t.number
+    }).toBuffer
 
     for (i <- tiles.indices) {
       if (buffer(i) == -1) {
@@ -28,7 +26,7 @@ case class RummiSet(tiles: List[Tile]) {
 
   def isValidRun: Boolean = {
     if (tiles.size < 3) return false
-    if (tiles.groupBy(_.colour).size > 1 && tiles.count(x => x.joker) == 0) return false
+    if (tiles.groupBy(_.color).size > 1 && tiles.count(x => x.joker) == 0) return false
     val n: List[Tile] = tiles.sortBy(_.number)
     if (tiles.count(x => x.joker) > 0) {
       // TODO: Check if valid with Joker
@@ -78,7 +76,7 @@ case class RummiSet(tiles: List[Tile]) {
     if (tiles.filter(x => !x.joker)
       .groupBy(_.number).size > 1) return false
     if (tiles.filter(x => !x.joker)
-      .groupBy(_.colour).size != tiles.size - tiles.count(x => x.joker)) return false
+      .groupBy(_.color).size != tiles.size - tiles.count(x => x.joker)) return false
     true
   }
 

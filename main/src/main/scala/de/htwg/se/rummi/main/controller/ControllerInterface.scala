@@ -20,10 +20,11 @@ trait ControllerInterface extends Publisher {
 
   def sortRack(game: Game): Try[Game]
 
-  def save(game: Game): String
+  def save(game: Game): Try[String]
 
   def redo(game: Game): Try[Game]
 
   def undo(game: Game): Try[Game]
 
+  def load(path: String): Try[Game]
 }

@@ -1,6 +1,5 @@
 package de.htwg.se.rummi.model.model
 
-import RummiColour._
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.util.Random
@@ -23,15 +22,15 @@ class RummiSetSpec extends WordSpec with Matchers {
     val group6 = new RummiSet(joker :: blueTile1 :: yellowTile1 :: joker2 :: Nil)
 
     "return true " in {
-      group1.isValidGroup() should be(true)
+      group1.isValidGroup should be(true)
     }
 
     "return true with a joker in the middle" in {
-      group2.isValidGroup() should be (true)
+      group2.isValidGroup should be (true)
     }
 
     "return true with 4 pieces and a joker" in {
-      group3.isValidGroup() should be (true)
+      group3.isValidGroup should be (true)
     }
 
     "give the correct amount of points" in {
@@ -39,11 +38,11 @@ class RummiSetSpec extends WordSpec with Matchers {
     }
 
     "return true with 4 pieces and 2 joker" in {
-      group5.isValidGroup() should be (true)
+      group5.isValidGroup should be (true)
     }
 
     "return true with 4 pieces and 2 jokers" in {
-      group6.isValidGroup() should be (true)
+      group6.isValidGroup should be (true)
     }
   }
 
@@ -62,10 +61,10 @@ class RummiSetSpec extends WordSpec with Matchers {
       "be return true if valid" in {
 
         val run1 = new RummiSet(g1 :: g2 :: g3 :: Nil)
-        run1.isValidRun() should be(true)
+        run1.isValidRun should be(true)
 
         val run2 = new RummiSet(g1 :: g2 :: b3 :: Nil)
-        run2.isValidRun() should be(false)
+        run2.isValidRun should be(false)
       }
 
       "be valid with shuffeld tiles" in {
@@ -74,7 +73,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         list = Random.shuffle(list)
 
         val run1 = new RummiSet(list)
-        run1.isValidRun() should be(true)
+        run1.isValidRun should be(true)
 
       }
 
@@ -83,7 +82,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         val list = g1 :: g2 :: g3 :: joker :: Nil
 
         val run = new RummiSet(list)
-        run.isValidRun() should be(true)
+        run.isValidRun should be(true)
       }
 
       "be invalid with a jocker at the end" in {
@@ -91,7 +90,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         val list = g11 :: g12 :: g13 :: joker :: Nil
 
         val run = new RummiSet(list)
-        run.isValidRun() should be(false)
+        run.isValidRun should be(false)
       }
 
       "be valid with a jocker at the beginning" in {
@@ -99,7 +98,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         val list = joker :: g2 :: g3 :: Nil
 
         val run = new RummiSet(list)
-        run.isValidRun() should be(true)
+        run.isValidRun should be(true)
       }
 
       "be invalid with a jocker at the beginning" in {
@@ -107,7 +106,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         val list = joker :: g1 :: g2 :: g3 :: Nil
 
         val run = new RummiSet(list)
-        run.isValidRun() should be(false)
+        run.isValidRun should be(false)
       }
 
       "be invalid with a jocker at the wrong place" in {
@@ -115,7 +114,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         val list = joker :: g2 :: g4 :: Nil
 
         val run = new RummiSet(list)
-        run.isValidRun() should be(false)
+        run.isValidRun should be(false)
       }
 
 
@@ -192,7 +191,7 @@ class RummiSetSpec extends WordSpec with Matchers {
         var list = joker :: g1  :: g3 :: Nil
 
         val run1 = new RummiSet(list)
-        run1.isValidRun() should be(false)
+        run1.isValidRun should be(false)
       }
 
       "should append a tile, if added to the right" in {

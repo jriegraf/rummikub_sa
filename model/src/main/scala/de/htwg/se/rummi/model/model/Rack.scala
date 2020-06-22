@@ -1,12 +1,11 @@
 package de.htwg.se.rummi.model.model
 
+import de.htwg.se.rummi.model.Const
 import de.htwg.se.rummi.model.Const._
-import play.api.libs.json.{JsArray, JsNumber, JsObject, JsValue, Json, Writes}
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
-case class Rack(tiles: Map[(Int, Int), Tile]) extends Grid {
-
-  override val rows: Int = RACK_ROWS
-  override val cols: Int = RACK_COLS
+case class Rack(tiles: Map[(Int, Int), Tile], rows: Int = Const.RACK_ROWS, cols: Int = Const.RACK_COLS) extends Grid {
 
   tiles.keys
     .find(x => x._1 > rows || x._2 > cols)
@@ -14,7 +13,7 @@ case class Rack(tiles: Map[(Int, Int), Tile]) extends Grid {
 
   def sortRack(): Rack = {
     var tilesByColor = tiles.values
-      .groupBy(x => x.colour)
+      .groupBy(x => x.color)
     while (tilesByColor.size > RACK_ROWS) {
       // combine colors if there are to many
       val keyOfFirstElement = tilesByColor.keys.toList.head
@@ -42,6 +41,22 @@ case class Rack(tiles: Map[(Int, Int), Tile]) extends Grid {
 }
 
 object Rack {
+
+  implicit val readsMap: Reads[Map[(Int, Int), Tile]] = {
+    Reads.list {
+      (
+        (__ \ "row").read[Int] and
+          (__ \ "col").read[Int] and
+          (__ \ "tile").read[Tile]
+        ) { (row, col, tile) => (row, col) -> tile }
+    }.map(tuples => tuples.toMap)
+  }
+
+  implicit val reads: Reads[Rack] = (
+    (__ \ "tiles").read[Map[(Int, Int), Tile]] and
+      (__ \ "rows").read[Int] and
+      (__ \ "cols").read[Int]
+    ) (Rack.apply _)
 
   implicit val writes: Writes[Rack] = new Writes[Rack] {
     def writes(field: Rack): JsValue = {

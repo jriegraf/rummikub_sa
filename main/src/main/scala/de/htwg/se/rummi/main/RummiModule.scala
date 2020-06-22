@@ -8,7 +8,7 @@ import de.htwg.se.rummi.main.controller.controllerBaseImpl.Controller
 import net.codingwell.scalaguice.ScalaModule
 
 class RummiModule extends AbstractModule with ScalaModule {
-  override def configure() = {
+  override def configure(): Unit = {
     bind[FileIoInterface].to[JsonFileIo]
     bind[ControllerInterface].to[Controller]
   }

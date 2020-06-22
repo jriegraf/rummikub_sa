@@ -19,7 +19,6 @@ import scala.util.{Failure, Success, Try}
 
 class Controller @Inject()() extends ControllerInterface {
 
-
   private val undoManager = new UndoManager
   val injector: Injector = Guice.createInjector(new RummiModule)
   val fileIo: FileIoInterface = injector.getInstance(classOf[FileIoInterface])
@@ -37,8 +36,12 @@ class Controller @Inject()() extends ControllerInterface {
     }
   }
 
-  def save(game: Game): String = {
+  override def save(game: Game): Try[String] = {
     fileIo.save(game)
+  }
+
+  override def load(path: String): Try[Game] = {
+    fileIo.load(path)
   }
 
   def players(game: Game): List[Player] = {

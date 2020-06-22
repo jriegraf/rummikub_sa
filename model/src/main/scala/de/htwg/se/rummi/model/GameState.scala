@@ -1,5 +1,7 @@
 package de.htwg.se.rummi.model
 
+import play.api.libs.json.{Reads, Writes}
+
 // Custom validation helpers
 
 object GameState extends Enumeration {
@@ -18,4 +20,8 @@ object GameState extends Enumeration {
   def message(gameStatus: GameState) = {
     map(gameStatus)
   }
+
+  implicit val myEnumReads: Reads[GameState.Value] = Reads.enumNameReads(GameState)
+  implicit val myEnumWrites: Writes[GameState.Value] = Writes.enumNameWrites
+
 }
