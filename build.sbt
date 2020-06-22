@@ -13,8 +13,9 @@ organization in ThisBuild := "JuPa.Software"
 
 lazy val global = project
   .in(file("."))
-  .settings(settings,
-    test in assembly := {}
+  .disablePlugins(AssemblyPlugin)
+  .settings(
+    settings
   )
   .aggregate(
     main,
@@ -26,10 +27,10 @@ lazy val global = project
 lazy val main = project
   .settings(name := "main",
     settings,
+    assemblySettings,
     libraryDependencies ++= commonDependencies,
     unmanagedBase := baseDirectory.value / "lib",
     mainClass in assembly := Some("de.htwg.se.rummi.Rummi"),
-    assemblyJarName in assembly := "rummi.jar",
   )
   .dependsOn(player, game)
 
@@ -37,7 +38,9 @@ lazy val main = project
 lazy val player = project
   .settings(name := "player",
     settings,
+    assemblySettings,
     libraryDependencies ++= commonDependencies,
+    libraryDependencies ++= akkaDependencies,
     unmanagedBase := baseDirectory.value / "lib",
     mainClass in assembly := Some("de.htwg.se.rummi.player_service.controller.Application")
   )
@@ -46,15 +49,18 @@ lazy val player = project
 lazy val game = project
   .settings(name := "game",
     settings,
+    assemblySettings,
     libraryDependencies ++= commonDependencies,
+    libraryDependencies ++= akkaDependencies,
     unmanagedBase := baseDirectory.value / "lib",
     mainClass in assembly := Some("de.htwg.se.rummi.game_service.Application")
   )
-      .dependsOn(model)
+  .dependsOn(model)
 
 lazy val model = project
   .settings(name := "model",
     settings,
+    assemblySettings,
     libraryDependencies ++= commonDependencies,
     unmanagedBase := baseDirectory.value / "lib")
   .dependsOn()
@@ -68,38 +74,34 @@ lazy val dependencies =
     val scalaLoggingV = "3.7.2"
     val slf4jV = "1.7.25"
     val typesafeConfigV = "1.3.1"
-    val pureconfigV = "0.8.0"
-    val monocleV = "1.4.0"
     val akkaV = "2.5.6"
     val scalatestV = "3.0.4"
     val scalacheckV = "1.13.5"
     val akkahttpV = "10.0.7"
 
-    val scalaXml = "org.scala-lang.modules" % "scala-xml_2.12" % "1.0.6"
     val logback = "ch.qos.logback" % "logback-classic" % logbackV
     val logstash = "net.logstash.logback" % "logstash-logback-encoder" % logstashV
     val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingV
     val slf4j = "org.slf4j" % "jcl-over-slf4j" % slf4jV
     val typesafeConfig = "com.typesafe" % "config" % typesafeConfigV
     val akka = "com.typesafe.akka" %% "akka-stream" % akkaV
-    val monocleCore = "com.github.julien-truffaut" %% "monocle-core" % monocleV
-    val monocleMacro = "com.github.julien-truffaut" %% "monocle-macro" % monocleV
-    val pureconfig = "com.github.pureconfig" %% "pureconfig" % pureconfigV
     val scalatest = "org.scalatest" %% "scalatest" % scalatestV
     val scalaswing = "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3"
     val scalacheck = "org.scalacheck" %% "scalacheck" % scalacheckV
-    val json = "com.typesafe.play" %% "play-json" % "2.9.0"
-    val gguice = "com.google.inject" % "guice" % "4.2.3"
-    val scalaguice = "net.codingwell" %% "scala-guice" % "4.2.3"
+    val json = "com.typesafe.play" %% "play-json" % "2.6.6"
+    val gguice = "com.google.inject" % "guice" % "4.1.0"
+    val scalaguice = "net.codingwell" %% "scala-guice" % "4.1.0"
     val akkahttp = "com.typesafe.akka" %% "akka-http" % akkahttpV
     val akkaplayjson = "de.heikoseeberger" %% "akka-http-circe" % "1.31.0"
   }
 
-lazy val commonDependencies = Seq(
+lazy val akkaDependencies = Seq(
   dependencies.akkaplayjson,
   dependencies.akkahttp,
   dependencies.akka,
-  dependencies.scalaXml,
+)
+
+lazy val commonDependencies = Seq(
   dependencies.gguice,
   dependencies.scalaguice,
   dependencies.scalaswing,
@@ -109,7 +111,6 @@ lazy val commonDependencies = Seq(
   dependencies.scalaLogging,
   dependencies.slf4j,
   dependencies.typesafeConfig,
-  dependencies.akka,
   dependencies.scalatest % "test",
   dependencies.scalacheck % "test"
 )
@@ -139,4 +140,17 @@ lazy val commonSettings = Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
   )
+)
+
+lazy val assemblySettings = Seq(
+  assemblyJarName in assembly := name.value + ".jar",
+  test in assembly := {},
+  assemblyMergeStrategy in assembly := {
+    case "module-info.class" => MergeStrategy.discard
+    case PathList("META-INF", xs@_*) => MergeStrategy.discard
+    case "application.conf" => MergeStrategy.concat
+    case x =>
+      val oldStrategy = (assemblyMergeStrategy in assembly).value
+      oldStrategy(x)
+  }
 )
