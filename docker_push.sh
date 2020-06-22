@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "----------- STARTING DEPLOYMENT -----------"
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin registry.heroku.com
 project_root=$(pwd)
 sbt clean
