@@ -92,7 +92,7 @@ lazy val dependencies =
     val gguice = "com.google.inject" % "guice" % "4.1.0"
     val scalaguice = "net.codingwell" %% "scala-guice" % "4.1.0"
     val akkahttp = "com.typesafe.akka" %% "akka-http" % akkahttpV
-    val akkaplayjson = "de.heikoseeberger" %% "akka-http-circe" % "1.31.0"
+    val akkaplayjson = "de.heikoseeberger" %% "akka-http-play-json" % "1.17.0"
   }
 
 lazy val akkaDependencies = Seq(

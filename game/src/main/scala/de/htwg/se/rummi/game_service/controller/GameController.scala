@@ -14,14 +14,14 @@ class GameController() extends GameService {
 
   var games: List[Game] = Nil
 
-  override def setGameState(id: Long, gameState: GameState): Try[Game] = {
-    games.find(game => game.id == id) match {
-      case Some(game) => setGameState(game, gameState)
-      case None => Failure(new NoSuchElementException("No such game!"))
+  override def gameIdToGame(id: Long): Try[Game] = {
+    games.find(g => g.id == id) match {
+      case Some(game) => Success(game)
+      case None => Failure(new NoSuchElementException("No such game."))
     }
   }
 
-  def setGameState(game: Game, gameState: GameState): Try[Game] = {
+  override def setGameState(game: Game, gameState: GameState): Try[Game] = {
     returnSuccess(game, game.copy(gameState = gameState))
   }
 
@@ -77,15 +77,7 @@ class GameController() extends GameService {
     Success(game)
   }
 
-
-  override def draw(id: Long): Try[Game] = {
-    games.find(game => game.id == id) match {
-      case Some(game) => draw(game)
-      case None => Failure(new NoSuchElementException("No such game!"))
-    }
-  }
-
-  def draw(game: Game): Try[Game] = {
+  override def draw(game: Game): Try[Game] = {
     val newTile = game.coveredTiles.head
 
     val p = game.playerParticipations.filter(p => p.player == game.activePlayer).head
@@ -105,7 +97,7 @@ class GameController() extends GameService {
     returnSuccess(game, newGame)
   }
 
-  def setActivePlayer(game: Game, player: Player): Try[Game] = {
+  override def setActivePlayer(game: Game, player: Player): Try[Game] = {
     val newGame = game.copy(activePlayer = player).copy(movedTiles = Nil)
     returnSuccess(game, newGame)
   }
@@ -119,14 +111,7 @@ class GameController() extends GameService {
     players(nextPlayerIndex)
   }
 
-  override def moveTile(id: Long, gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
-    games.find(game => game.id == id) match {
-      case Some(game) => moveTile(game, gridFrom, gridTo, tile, newRow, newCol)
-      case None => Failure(new NoSuchElementException("No such game!"))
-    }
-  }
-
-  def moveTile(game: Game, from: GridType, to: GridType, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
+  override def moveTile(game: Game, from: GridType, to: GridType, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
 
     val gridFrom = if (from == RACK) game.getRackOfActivePlayer else game.field
     val gridTo = if (to == RACK) game.getRackOfActivePlayer else game.field
