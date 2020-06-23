@@ -6,17 +6,20 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.RejectionHandler
+import akka.http.scaladsl.server.RouteResult._
+import akka.stream.ActorMaterializer
 import play.api.libs.json.Json
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.Future
 
 object Application {
 
   val PORT: Int = 8801
   val service: PlayerService = new PlayerController()
 
-  implicit val system: ActorSystem = ActorSystem("player-system")
-  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+  implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+  implicit val executionContext = system.dispatcher
 
   implicit def myRejectionHandler = RejectionHandler.newBuilder()
     .handleNotFound {
@@ -29,6 +32,7 @@ object Application {
       rejectEmptyResponse {
         service.getPlayer(id) match {
           case Some(p) => complete(HttpEntity(ContentTypes.`application/json`, Json.prettyPrint(Json.toJson(p))))
+          case None => complete(NotFound -> s"No player with id $id")
         }
       }
     }

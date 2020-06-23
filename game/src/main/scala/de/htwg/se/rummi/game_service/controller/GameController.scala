@@ -151,6 +151,7 @@ class GameController() extends GameService {
         case (rack: Rack, _: Rack) =>
           val part = game.getParticipationOfActivePlayer.copy(rack = rack)
           returnSuccess(game, game.updateParticipationOfActivePlayer(part))
+        case _ => Failure(new Exception("Some strange error happened!"))
       }
     }
   }

@@ -22,7 +22,6 @@ object Application extends GameMarshaller {
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
-  // needed for the future map/flatmap in the end
   implicit val executionContext = system.dispatcher
 
 

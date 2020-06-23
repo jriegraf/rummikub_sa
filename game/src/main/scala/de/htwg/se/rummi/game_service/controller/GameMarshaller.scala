@@ -9,8 +9,3 @@ trait GameMarshaller extends PlayJsonSupport {
   implicit val playerFormat: OFormat[Player] = Json.format[Player]
 
 }
-
-
-object GameMarshaller extends GameMarshaller {
-
-}
