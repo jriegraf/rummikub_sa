@@ -15,12 +15,12 @@ class ControllerSpec extends WordSpec with Matchers {
   var controller = new Controller()
   controller.createGame(playerNames)
 
-  val g9 = new Tile(9, GREEN)
-  val g10 = new Tile(10, GREEN)
-  val g8 = new Tile(8, GREEN)
-  val g11 = new Tile(11, GREEN)
-  val g12 = new Tile(12, GREEN)
-  val g13 = new Tile(13, GREEN)
+  val g9 = Tile(9, GREEN)
+  val g10 = Tile(10, GREEN)
+  val g8 = Tile(8, GREEN)
+  val g11 = Tile(11, GREEN)
+  val g12 = Tile(12, GREEN)
+  val g13 = Tile(13, GREEN)
 
   "When the game starts a new Game " should {
     "be initiated " in {

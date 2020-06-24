@@ -1,7 +1,17 @@
 package de.htwg.se.rummi.model.util
 
-abstract class GridType {}
+case class GridType(name: String) {
+  override def toString: String = name
+}
 
-object RACK extends GridType {}
+object GridType {
 
-object FIELD extends GridType {}
+  import play.api.libs.json._
+
+  implicit val writes: OWrites[GridType] = Json.writes[GridType]
+  implicit val reads: Reads[GridType] = Json.reads[GridType]
+}
+
+object RACK extends GridType("RACK")
+
+object FIELD extends GridType("FIELD")

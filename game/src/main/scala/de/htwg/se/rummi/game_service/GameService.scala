@@ -7,7 +7,11 @@ import de.htwg.se.rummi.model.util.GridType
 import scala.util.Try
 
 trait GameService {
-  def gameIdToGame(id: Long): Try[Game]
+  def sortRack(game: Game): Try[Game]
+
+  def getNextActivePlayer(game: Game): Player
+
+  def getGameById(id: Long): Try[Game]
 
   def setGameState(game: Game, gameState: GameState): Try[Game]
 

@@ -3,7 +3,7 @@ package de.htwg.se.rummi.main.controller.controllerBaseImpl
 import java.util.NoSuchElementException
 
 import com.google.inject.{Guice, Inject, Injector}
-import de.htwg.se.rummi.game_service.controller.GameController
+import de.htwg.se.rummi.game_service.GameService
 import de.htwg.se.rummi.game_service.controller.fileIoComponent.FileIoInterface
 import de.htwg.se.rummi.main.RummiModule
 import de.htwg.se.rummi.main.controller.ControllerInterface
@@ -23,8 +23,12 @@ class Controller @Inject()() extends ControllerInterface {
   val injector: Injector = Guice.createInjector(new RummiModule)
   val fileIo: FileIoInterface = injector.getInstance(classOf[FileIoInterface])
 
-  val gameController = new GameController()
+  val gameController : GameService = new GameServiceConnector()
   val playerController: PlayerService = new PlayerController()
+
+  override def getGameById(id: Long): Try[Game] = {
+    gameController.getGameById(id)
+  }
 
   def createGame(playerNames: List[String]): Try[Game] = {
     if (playerNames == Nil) Failure(new NoSuchElementException())
@@ -187,8 +191,7 @@ class Controller @Inject()() extends ControllerInterface {
   }
 
   override def sortRack(game: Game): Try[Game] = {
-    Success(game.updateParticipationOfActivePlayer(
-      game.getParticipationOfActivePlayer.copy(rack = game.getRackOfActivePlayer.sortRack())))
+    gameController.sortRack(game)
   }
 
 }

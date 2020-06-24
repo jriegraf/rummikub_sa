@@ -11,7 +11,8 @@ class TileSpec extends WordSpec with Matchers {
 
     "convert to json" in {
       val jsonString = Json.prettyPrint(Json.toJson(tileBlueFour))
-      jsonString should be ("""{
+      jsonString should be (s"""{
+                              |  "id" : "${tileBlueFour.id}",
                               |  "number" : 4,
                               |  "color" : {
                               |    "name" : "BLUE"
@@ -21,23 +22,25 @@ class TileSpec extends WordSpec with Matchers {
     }
 
     "convert from json" in {
-      val json = """{
-                   |  "number" : 4,
-                   |  "color" : {
-                   |    "name" : "BLUE"
-                   |  },
-                   |  "joker" : false
-                   |}""".stripMargin
+      val json = s"""{
+                    |  "id" : "ABCD",
+                    |  "number" : 4,
+                    |  "color" : {
+                    |    "name" : "BLUE"
+                    |  },
+                    |  "joker" : false
+                    |}""".stripMargin
 
       val tile = Json.parse(json).as[Tile]
+      tile.id should be ("ABCD")
       tile.number  should be (4)
       tile.color should be (BLUE)
       tile.joker should be (false)
     }
 
-    "equals compares by reference, not by value" in {
+    "equals compares by id, not by value" in {
       tileBlueFour equals tileBlueFour should be(true)
-      tileBlueFour equals Tile(4, BLUE, false) should be(false)
+      Tile(4, BLUE) equals Tile(4, BLUE) should be(false)
     }
 
     "equals with another type should fail" in {

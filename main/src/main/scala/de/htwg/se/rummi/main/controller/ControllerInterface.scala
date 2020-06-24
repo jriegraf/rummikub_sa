@@ -27,4 +27,6 @@ trait ControllerInterface extends Publisher {
   def undo(game: Game): Try[Game]
 
   def load(path: String): Try[Game]
+
+  def getGameById(id: Long): Try[Game]
 }

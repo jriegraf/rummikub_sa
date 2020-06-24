@@ -14,7 +14,7 @@ class GameController() extends GameService {
 
   var games: List[Game] = Nil
 
-  override def gameIdToGame(id: Long): Try[Game] = {
+  def getGameById(id: Long): Try[Game] = {
     games.find(g => g.id == id) match {
       case Some(game) => Success(game)
       case None => Failure(new NoSuchElementException("No such game."))
@@ -31,17 +31,17 @@ class GameController() extends GameService {
     var racks: List[Rack] = Nil
 
     for (i <- Const.LOWEST_NUMBER to Const.HIGHEST_NUMBER) {
-      coveredTiles = new Tile(i, RED) :: coveredTiles
-      coveredTiles = new Tile(i, RED) :: coveredTiles
-      coveredTiles = new Tile(i, BLUE) :: coveredTiles
-      coveredTiles = new Tile(i, BLUE) :: coveredTiles
-      coveredTiles = new Tile(i, GREEN) :: coveredTiles
-      coveredTiles = new Tile(i, GREEN) :: coveredTiles
-      coveredTiles = new Tile(i, YELLOW) :: coveredTiles
-      coveredTiles = new Tile(i, YELLOW) :: coveredTiles
+      coveredTiles = Tile(i, RED) :: coveredTiles
+      coveredTiles = Tile(i, RED) :: coveredTiles
+      coveredTiles = Tile(i, BLUE) :: coveredTiles
+      coveredTiles = Tile(i, BLUE) :: coveredTiles
+      coveredTiles = Tile(i, GREEN) :: coveredTiles
+      coveredTiles = Tile(i, GREEN) :: coveredTiles
+      coveredTiles = Tile(i, YELLOW) :: coveredTiles
+      coveredTiles = Tile(i, YELLOW) :: coveredTiles
     }
 
-    coveredTiles = (1 to 2 map (i => new Tile(i, WHITE, true))).toList ::: coveredTiles
+    coveredTiles = (1 to 2 map (i => Tile(i, WHITE, true))).toList ::: coveredTiles
 
     coveredTiles = scala.util.Random.shuffle(coveredTiles)
 
@@ -102,7 +102,7 @@ class GameController() extends GameService {
     returnSuccess(game, newGame)
   }
 
-  def getNextActivePlayer(game: Game): Player = {
+  override def getNextActivePlayer(game: Game): Player = {
     val players: List[Player] = game.playerParticipations.map(p => p.player).sortBy(p => p.name)
     val nextPlayerIndex = players.indexOf(game.activePlayer) + 1
     if (nextPlayerIndex >= players.size) {
@@ -127,7 +127,7 @@ class GameController() extends GameService {
 
   private def moveTile(game: Game, gridFrom: Grid, gridTo: Grid, tile: Tile, newRow: Int, newCol: Int): Try[Game] = {
 
-    if (checkCoordInBounds(newRow, newCol, gridTo))
+    if (!checkCoordInBounds(newRow, newCol, gridTo))
       return Failure(new IllegalArgumentException("Coords not in grid bounds."))
 
     moveTileImpl(gridFrom, gridTo, tile, newRow, newCol) match {
@@ -176,5 +176,10 @@ class GameController() extends GameService {
   private def returnSuccess(game: Game, newGame: Game): Try[Game] = {
     games = games.updated(games.indexOf(game), newGame)
     Success(newGame)
+  }
+
+  override def sortRack(game: Game): Try[Game] = {
+    returnSuccess(game, game.updateParticipationOfActivePlayer(
+      game.getParticipationOfActivePlayer.copy(rack = game.getRackOfActivePlayer.sortRack())))
   }
 }

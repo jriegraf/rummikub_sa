@@ -2,7 +2,7 @@ package de.htwg.se.rummi.model.model
 
 import org.scalatest.{Matchers, WordSpec}
 
-class GameControllerSpec extends WordSpec with Matchers {
+class GameServiceSpec extends WordSpec with Matchers {
 
   "A game" should {
 

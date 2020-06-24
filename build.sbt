@@ -29,6 +29,7 @@ lazy val main = project
     settings,
     assemblySettings,
     libraryDependencies ++= commonDependencies,
+    libraryDependencies ++= akkaDependencies,
     unmanagedBase := baseDirectory.value / "lib",
     mainClass in assembly := Some("de.htwg.se.rummi.Rummi"),
   )

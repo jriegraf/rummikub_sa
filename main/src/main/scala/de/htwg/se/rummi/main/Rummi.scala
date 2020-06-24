@@ -43,7 +43,7 @@ object Rummi {
     val controller = injector.getInstance(classOf[ControllerInterface])
 
     val game : Game = controller.createGame(playerNames).getOrElse(throw new Exception)
-    val restService = new RestService(controller, game);
+    val restService = new RestService(controller);
 
     val tui = new Tui(controller, game)
 
