@@ -1,6 +1,7 @@
 package de.htwg.se.rummi.player.controller
 
 import de.htwg.se.rummi.model.model.Player
+import play.api.libs.json.Json
 import slick.jdbc.H2Profile.api._
 
 import scala.concurrent.Await
