@@ -42,7 +42,7 @@ lazy val player = project
     assemblySettings,
     libraryDependencies ++= commonDependencies,
     libraryDependencies ++= akkaDependencies,
-    libraryDependencies ++= slickDependencies,
+    libraryDependencies ++= databaseDependencies,
     unmanagedBase := baseDirectory.value / "lib",
     mainClass in assembly := Some("de.htwg.se.rummi.player.controller.Application")
   )
@@ -54,6 +54,7 @@ lazy val game = project
     assemblySettings,
     libraryDependencies ++= commonDependencies,
     libraryDependencies ++= akkaDependencies,
+    libraryDependencies ++= databaseDependencies,
     unmanagedBase := baseDirectory.value / "lib",
     mainClass in assembly := Some("de.htwg.se.rummi.game_service.Application")
   )
@@ -99,6 +100,8 @@ lazy val dependencies =
     val slick = "com.typesafe.slick" %% "slick" % "3.3.1"
     val slickHikaricp = "com.typesafe.slick" %% "slick-hikaricp" % "3.3.1"
     val h2Database = "com.h2database" % "h2" % "1.4.199"
+    val mongoDatabase = "org.mongodb.scala" %% "mongo-scala-driver" % "2.9.0"
+    val postgresqlDatabase = "org.postgresql" % "postgresql" % "42.2.13"
   }
 
 lazy val akkaDependencies = Seq(
@@ -107,10 +110,12 @@ lazy val akkaDependencies = Seq(
   dependencies.akka,
 )
 
-lazy val slickDependencies = Seq(
+lazy val databaseDependencies = Seq(
   dependencies.slick,
   dependencies.slickHikaricp,
-  dependencies.h2Database
+  dependencies.h2Database,
+  dependencies.mongoDatabase,
+  dependencies.postgresqlDatabase
 )
 
 lazy val commonDependencies = Seq(

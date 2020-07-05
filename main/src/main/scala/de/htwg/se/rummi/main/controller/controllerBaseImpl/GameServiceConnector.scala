@@ -2,18 +2,18 @@ package de.htwg.se.rummi.main.controller.controllerBaseImpl
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
+import akka.http.scaladsl.model._
 import akka.stream.ActorMaterializer
 import de.htwg.se.rummi.game_service.GameService
 import de.htwg.se.rummi.model.GameState.GameState
 import de.htwg.se.rummi.model.messages.MoveTileMessage
-import de.htwg.se.rummi.model.model.{Game, Player, Tile}
+import de.htwg.se.rummi.model.model._
 import de.htwg.se.rummi.model.util.GridType
 import play.api.libs.json.Json
 
 import scala.collection.immutable.List
-import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContextExecutor}
+import scala.concurrent.duration._
 import scala.util.{Success, Try}
 
 class GameServiceConnector extends GameService {
@@ -112,9 +112,54 @@ class GameServiceConnector extends GameService {
     Success(Await.result(jsonString, 10.seconds))
   }
 
-  override def setActivePlayer(game: Game, player: Player): Try[Game] = ???
+  override def setActivePlayer(game: Game, player: Player): Try[Game] = {
+    val request = HttpRequest(
+      method = HttpMethods.POST,
+      uri = s"http://$host:$port/games/${game.id}/setActivePlayer",
+      entity = HttpEntity(
+        ContentTypes.`application/json`, Json.prettyPrint(Json.toJson(player))
+      )
+    )
 
-  override def getNextActivePlayer(game: Game): Player = ???
+    val responseFuture = Http().singleRequest(request)
+    val jsonString = responseFuture
+      .flatMap(_.entity.toStrict(2 seconds))
+      .map(_.data.utf8String).map(s => Json.parse(s).as[Game])
 
-  override def setGameState(game: Game, gameState: GameState): Try[Game] = ???
+    Success(Await.result(jsonString, 10.seconds))
+  }
+
+  override def getNextActivePlayer(game: Game): Player = {
+    val request = HttpRequest(
+      method = HttpMethods.POST,
+      uri = s"http://$host:$port/games/${game.id}/getNextActivePlayer",
+      entity = HttpEntity(
+        ContentTypes.`application/json`, ""
+      )
+    )
+
+    val responseFuture = Http().singleRequest(request)
+    val jsonString = responseFuture
+      .flatMap(_.entity.toStrict(2 seconds))
+      .map(_.data.utf8String).map(s => Json.parse(s).as[Player])
+
+    Await.result(jsonString, 10.seconds)
+  }
+
+  override def setGameState(game: Game, gameState: GameState): Try[Game] = {
+    val request = HttpRequest(
+      method = HttpMethods.POST,
+      uri = s"http://$host:$port/games/${game.id}/setGameState",
+      entity = HttpEntity(
+        ContentTypes.`application/json`, Json.prettyPrint(Json.toJson(gameState))
+      )
+    )
+
+    val responseFuture = Http().singleRequest(request)
+    val jsonString = responseFuture
+      .flatMap(_.entity.toStrict(2 seconds))
+      .map(_.data.utf8String).map(s => Json.parse(s).as[Game])
+
+    Success(Await.result(jsonString, 10.seconds))
+  }
 }

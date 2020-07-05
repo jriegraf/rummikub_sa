@@ -2,14 +2,15 @@ package de.htwg.se.rummi.game_service
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import de.htwg.se.rummi.game_service.controller.{GameController, GameMarshaller}
 import de.htwg.se.rummi.model.messages.MoveTileMessage
 import de.htwg.se.rummi.model.model.Player
+import de.htwg.se.rummi.model.GameState.GameState
 import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -28,20 +29,44 @@ object GameServiceApplication extends GameMarshaller {
   val createEventRoute: Route = {
     pathPrefix("games" / LongNumber) { id ⇒
 
-      path("setActivePlayer") {
+      path("getNextActivePlayer") {
         post {
           service.getGameById(id) match {
             case Failure(e) => complete(BadRequest, e.getMessage)
             case Success(game) =>
-              entity(as[Player]) { player =>
-                service.setActivePlayer(game, player) match {
-                  case Failure(e) => complete(BadRequest, e.getMessage)
-                  case Success(game) => complete(HttpEntity(ContentTypes.`application/json`, Json.prettyPrint(Json.toJson(game))))
-                }
-              }
+              val player = service.getNextActivePlayer(game)
+              complete(HttpEntity(ContentTypes.`application/json`, Json.prettyPrint(Json.toJson(player))))
           }
         }
       } ~
+        path("setActivePlayer") {
+          post {
+            service.getGameById(id) match {
+              case Failure(e) => complete(BadRequest, e.getMessage)
+              case Success(game) =>
+                entity(as[Player]) { player =>
+                  service.setActivePlayer(game, player) match {
+                    case Failure(e) => complete(BadRequest, e.getMessage)
+                    case Success(game) => complete(HttpEntity(ContentTypes.`application/json`, Json.prettyPrint(Json.toJson(game))))
+                  }
+                }
+            }
+          }
+        } ~
+        path("setGameState") {
+          post {
+            service.getGameById(id) match {
+              case Failure(e) => complete(BadRequest, e.getMessage)
+              case Success(game) =>
+                entity(as[GameState]) { gameState =>
+                  service.setGameState(game, gameState) match {
+                    case Failure(e) => complete(BadRequest, e.getMessage)
+                    case Success(game) => complete(HttpEntity(ContentTypes.`application/json`, Json.prettyPrint(Json.toJson(game))))
+                  }
+                }
+            }
+          }
+        } ~
         path("draw") {
           post {
             service.getGameById(id) match {

@@ -34,11 +34,11 @@ object Application {
     .result()
 
   private val route = get {
-    path("players" / LongNumber) { id =>
+    path("players" / Segment) { name =>
       rejectEmptyResponse {
-        service.getPlayer(id) match {
+        service.getPlayer(name) match {
           case Some(p) => complete(HttpEntity(ContentTypes.`application/json`, Json.prettyPrint(Json.toJson(p))))
-          case None => complete(NotFound -> s"No player with id $id")
+          case None => complete(NotFound -> s"No player with id $name")
         }
       }
     }

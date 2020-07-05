@@ -25,7 +25,7 @@ class RestService(controller: ControllerInterface) {
   val route: Route = {
     pathPrefix("games" / LongNumber) { id ⇒
       path("command" / Segment) { command =>
-        post {
+        get {
           controller.getGameById(id) match {
             case Failure(e) => complete(BadRequest, e.getMessage)
             case Success(game) =>
@@ -39,7 +39,7 @@ class RestService(controller: ControllerInterface) {
     }
   }
 
-  val bindingFuture: Future[Http.ServerBinding] = Http().bindAndHandle(route, "0.0.0.0", 8800)
+  val bindingFuture: Future[Http.ServerBinding] = Http().bindAndHandle(route, "0.0.0.0", 8000)
   bindingFuture.foreach(f => println(s"RestService online at ${f.localAddress}"))
 
   def unbind(): Unit = {

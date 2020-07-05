@@ -1,6 +1,6 @@
 package de.htwg.se.rummi.model.model
 
-case class Player(id: Long, name: String) {}
+case class Player(name: String, id: Option[Long] = None) {}
 
 object Player {
 

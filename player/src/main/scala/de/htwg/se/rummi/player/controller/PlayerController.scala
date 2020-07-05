@@ -1,31 +1,25 @@
 package de.htwg.se.rummi.player.controller
 
-import de.htwg.se.rummi.model.model.Player
-import slick.jdbc.H2Profile.api._
+import java.util.NoSuchElementException
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
+import de.htwg.se.rummi.model.model.Player
+import de.htwg.se.rummi.player.controller.database.slick.PlayerRepository
+
+import scala.util._
 
 class PlayerController() extends PlayerService {
 
-  private var players: List[Player] = Player(0, "Jules") :: Player(1, "Pato") :: Nil
+  private val playerRepository = new PlayerRepository()
+  (Player("Jules") :: Player("Pato") :: Nil).foreach(p => playerRepository.create(p))
 
-  override def getPlayers(playerNames: List[String]): List[Player] = playerNames.map(name => {
-    players.find(p => p.name == name) match {
+  override def getPlayers(playerNames: List[String]): Try[List[Player]] = Success(playerNames.map(name => {
+    playerRepository.read(name) match {
       case Some(player) => player
-      case None => {
-        val newPlayer = Player(players.size, name)
-        players = players :+ newPlayer
-        newPlayer
-      }
+      case None => return Failure(new NoSuchElementException(f"No Player with id $name found."))
     }
-  });
+  }))
 
-  override def getPlayer(id: Long): Option[Player] = {
-    val players = CaseClassMapping.players
-    val future = CaseClassMapping.db.run((for (p <- players if p.id === id) yield p).result.headOption)
-
-    Await.result(future, 3 seconds)
+  override def getPlayer(name: String): Option[Player] = {
+    playerRepository.read(name)
   }
 }
