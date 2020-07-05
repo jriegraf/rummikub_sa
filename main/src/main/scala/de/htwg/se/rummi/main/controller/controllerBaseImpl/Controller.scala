@@ -2,20 +2,20 @@ package de.htwg.se.rummi.main.controller.controllerBaseImpl
 
 import java.util.NoSuchElementException
 
-import com.google.inject.{Guice, Inject, Injector}
+import com.google.inject._
 import de.htwg.se.rummi.game_service.GameService
 import de.htwg.se.rummi.game_service.controller.fileIoComponent.FileIoInterface
 import de.htwg.se.rummi.main.RummiModule
 import de.htwg.se.rummi.main.controller.ControllerInterface
 import de.htwg.se.rummi.main.util.UndoManager
+import de.htwg.se.rummi.model._
 import de.htwg.se.rummi.model.Const._
 import de.htwg.se.rummi.model.GameState._
 import de.htwg.se.rummi.model.model._
 import de.htwg.se.rummi.model.util.GridType
-import de.htwg.se.rummi.model.{AlreadyDrawnException, Const, FieldNotValidException, InvalidGameStateException}
-import de.htwg.se.rummi.player.controller.{PlayerController, PlayerService}
+import de.htwg.se.rummi.player.controller.PlayerService
 
-import scala.util.{Failure, Success, Try}
+import scala.util._
 
 class Controller @Inject()() extends ControllerInterface {
 
@@ -23,22 +23,21 @@ class Controller @Inject()() extends ControllerInterface {
   val injector: Injector = Guice.createInjector(new RummiModule)
   val fileIo: FileIoInterface = injector.getInstance(classOf[FileIoInterface])
 
-  val gameController : GameService = new GameServiceConnector()
-  val playerController: PlayerService = new PlayerController()
+  val gameController: GameService = new GameServiceConnector()
+  val playerController: PlayerService = new PlayerServiceConnector()
 
   override def getGameById(id: Long): Try[Game] = {
     gameController.getGameById(id)
   }
 
   def createGame(playerNames: List[String]): Try[Game] = {
-    if (playerNames == Nil) Failure(new NoSuchElementException())
-    gameController.newGame(playerController.getPlayers(playerNames)) match {
-      case Failure(err) => throw err
-      case Success(game) => {
-        Success(game)
-      }
+    if (playerNames == Nil) Failure(new IllegalArgumentException("Must provide player names."))
+    playerController.getPlayers(playerNames) match {
+      case Success(value) => gameController.newGame(value)
+      case Failure(e) => Failure(new NoSuchElementException(s"Players ${playerNames.mkString(",")} not found."))
     }
   }
+
 
   override def save(game: Game): Try[String] = {
     fileIo.save(game)
@@ -97,8 +96,8 @@ class Controller @Inject()() extends ControllerInterface {
    * Draw: If the player can not place a stone on the field, he must take a stone from the stack of covered stones.
    */
   def draw(game: Game): Try[Game] = {
-    if (game.countMovedTiles > 0) return Failure(new InvalidGameStateException("You have already placed tiles on the field."))
-    if (game.gameState == DRAWN) return Failure(new AlreadyDrawnException("Already drawn."))
+    if (game.countMovedTiles > 0) return Failure(InvalidGameStateException("You have already placed tiles on the field."))
+    if (game.gameState == DRAWN) return Failure(AlreadyDrawnException("Already drawn."))
     gameController.draw(game)
   }
 

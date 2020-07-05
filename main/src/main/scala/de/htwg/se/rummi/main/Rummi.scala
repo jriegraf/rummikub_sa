@@ -6,6 +6,7 @@ import de.htwg.se.rummi.main.controller.ControllerInterface
 import de.htwg.se.rummi.model.model.Game
 
 import scala.io.StdIn
+import scala.util.{Failure, Success}
 
 object Rummi {
 
@@ -24,7 +25,7 @@ object Rummi {
 
     if (args.size > 0) {
       // Read player names from program arguments
-      val numberOfPlayers : Int= args(0).toInt
+      val numberOfPlayers: Int = args(0).toInt
       if (args.size - 1 != numberOfPlayers) throw new IllegalArgumentException
       playerNames = args.slice(1, args.size).toList
     } else {
@@ -42,7 +43,13 @@ object Rummi {
     val injector = Guice.createInjector(new RummiModule)
     val controller = injector.getInstance(classOf[ControllerInterface])
 
-    val game : Game = controller.createGame(playerNames).getOrElse(throw new Exception)
+    val game: Game = controller.createGame(playerNames) match {
+      case Failure(exception) =>
+        println(s"Game could not be created. Error: ${exception}")
+        System.exit(1)
+        return
+      case Success(value) => value
+    }
     val restService = new RestService(controller);
 
     val tui = new Tui(controller, game)
