@@ -13,7 +13,7 @@ import de.htwg.se.rummi.model.GameState._
 import de.htwg.se.rummi.model.model._
 import de.htwg.se.rummi.model.util.GridType
 import de.htwg.se.rummi.model.{AlreadyDrawnException, Const, FieldNotValidException, InvalidGameStateException}
-import de.htwg.se.rummi.player_service.controller.{PlayerController, PlayerService}
+import de.htwg.se.rummi.player.controller.{PlayerController, PlayerService}
 
 import scala.util.{Failure, Success, Try}
 

@@ -42,8 +42,9 @@ lazy val player = project
     assemblySettings,
     libraryDependencies ++= commonDependencies,
     libraryDependencies ++= akkaDependencies,
+    libraryDependencies ++= slickDependencies,
     unmanagedBase := baseDirectory.value / "lib",
-    mainClass in assembly := Some("de.htwg.se.rummi.player_service.controller.Application")
+    mainClass in assembly := Some("de.htwg.se.rummi.player.controller.Application")
   )
   .dependsOn(model)
 
@@ -73,7 +74,7 @@ lazy val dependencies =
     val logbackV = "1.2.3"
     val logstashV = "4.11"
     val scalaLoggingV = "3.7.2"
-    val slf4jV = "1.7.25"
+    val slf4jV = "1.7.26"
     val typesafeConfigV = "1.3.1"
     val akkaV = "2.5.6"
     val scalatestV = "3.0.4"
@@ -94,12 +95,22 @@ lazy val dependencies =
     val scalaguice = "net.codingwell" %% "scala-guice" % "4.1.0"
     val akkahttp = "com.typesafe.akka" %% "akka-http" % akkahttpV
     val akkaplayjson = "de.heikoseeberger" %% "akka-http-play-json" % "1.17.0"
+
+    val slick = "com.typesafe.slick" %% "slick" % "3.3.1"
+    val slickHikaricp = "com.typesafe.slick" %% "slick-hikaricp" % "3.3.1"
+    val h2Database = "com.h2database" % "h2" % "1.4.199"
   }
 
 lazy val akkaDependencies = Seq(
   dependencies.akkaplayjson,
   dependencies.akkahttp,
   dependencies.akka,
+)
+
+lazy val slickDependencies = Seq(
+  dependencies.slick,
+  dependencies.slickHikaricp,
+  dependencies.h2Database
 )
 
 lazy val commonDependencies = Seq(

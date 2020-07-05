@@ -1,4 +1,4 @@
-package de.htwg.se.rummi.player_service.controller
+package de.htwg.se.rummi.player.controller
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -8,9 +8,15 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.RejectionHandler
 import akka.http.scaladsl.server.RouteResult._
 import akka.stream.ActorMaterializer
+import de.htwg.se.rummi.model.model.Player
 import play.api.libs.json.Json
 
 import scala.concurrent.Future
+import slick.jdbc.H2Profile.api._
+
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
 
 object Application {
 
@@ -40,6 +46,7 @@ object Application {
 
 
   val bindingFuture: Future[Http.ServerBinding] = Http().bindAndHandle(route, "0.0.0.0", PORT)
+  bindingFuture.foreach(f => println(s"PlayerService online at ${f.localAddress}"))
 
   def unbind(): Unit = {
     bindingFuture

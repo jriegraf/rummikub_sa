@@ -1,4 +1,4 @@
-package de.htwg.se.rummi.player_service.controller
+package de.htwg.se.rummi.player.controller
 
 import de.htwg.se.rummi.model.model.Player
 
