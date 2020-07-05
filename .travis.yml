@@ -1,12 +1,28 @@
 language: scala
+
 scala:
   - 2.12.2
+
 notifications:
   email:
     recipients:
       - julianriegraf@web.de
       - pa.toth87@gmail.com
+
 jdk:
   - openjdk8
+
+services:
+  - docker
+
 script: "sbt clean coverage test"
+
 after_success: "sbt coverageReport coveralls"
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: bash docker_push.sh
+  on:
+    tags: false
+    all_branches: true

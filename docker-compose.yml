@@ -1,0 +1,22 @@
+# sudo docker pull registry.heroku.com/rummikub-sa/game
+# sudo docker pull registry.heroku.com/rummikub-sa/player
+
+version: '3'
+services:
+  game_service:
+    image: rummikub/game
+    ports:
+      - 8802:8802
+    networks:
+      default:
+        aliases:
+          - game
+
+  player_service:
+    image: rummikub/player
+    ports:
+      - 8801:8801
+    networks:
+      default:
+        aliases:
+          - player
