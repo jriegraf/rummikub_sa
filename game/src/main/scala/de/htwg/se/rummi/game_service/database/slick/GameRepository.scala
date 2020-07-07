@@ -18,11 +18,11 @@ class GameRepository extends GameCrudRepository{
     null,
     "org.postgresql.Driver")
 
-  override def create(player: Player): Try[Unit] = ???
+  override def create(game: Game): Try[Unit] = ???
 
-  override def read(name: String): Option[Player] = ???
+  override def read(name: String): Option[Game] = ???
 
-  override def delete(player: Player): Try[Unit] = ???
+  override def delete(game: Game): Try[Unit] = ???
 
-  override def update(player: Player): Try[Unit] = ???
+  override def update(game: Game): Try[Unit] = ???
 }

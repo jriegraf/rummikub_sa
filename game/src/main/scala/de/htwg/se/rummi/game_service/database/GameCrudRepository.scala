@@ -1,16 +1,16 @@
 package de.htwg.se.rummi.game_service.database
 
-import de.htwg.se.rummi.model.model.Player
+import de.htwg.se.rummi.model.model.Game
 
 import scala.util.Try
 
 trait GameCrudRepository {
 
-  def create(player: Player): Try[Unit]
+  def create(game: Game): Try[Unit]
 
-  def read(name: String): Option[Player]
+  def read(id: Long): Option[Game]
 
-  def delete(player: Player): Try[Unit]
+  def delete(game: Game): Try[Unit]
 
-  def update(player: Player): Try[Unit]
+  def update(game: Game): Try[Unit]
 }

@@ -2,7 +2,18 @@
 # sudo docker pull registry.heroku.com/rummikub-sa/player
 
 version: '3'
+
 services:
+
+  # sudo docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=pw -d postgres
+  # sudo docker run -p 27017:27017 -e MONGO_INITDB_DATABASE=rummikub --name mongo -d mongo
+  player_db:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=pw
+
   game_service:
     image: rummikub/game
     ports:

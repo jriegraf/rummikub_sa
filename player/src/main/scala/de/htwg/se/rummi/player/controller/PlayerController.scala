@@ -3,7 +3,7 @@ package de.htwg.se.rummi.player.controller
 import java.util.NoSuchElementException
 
 import de.htwg.se.rummi.model.model.Player
-import de.htwg.se.rummi.player.controller.database.slick.PlayerRepository
+import de.htwg.se.rummi.player.controller.database.mongo.PlayerRepository
 
 import scala.util._
 
