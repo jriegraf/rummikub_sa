@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 project_root=$(pwd)
-#sbt clean
-#sbt assembly
+sbt clean
+sbt assembly
 
 cd "$project_root"/game || exit
 sudo docker build -t rummikub/game .

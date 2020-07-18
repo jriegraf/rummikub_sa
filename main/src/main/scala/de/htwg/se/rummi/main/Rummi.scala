@@ -51,7 +51,7 @@ object Rummi {
       case Success(value) => value
     }
     val restService = new RestService(controller);
-
+    println("Game id: " + game.id)
     val tui = new Tui(controller, game)
 
 

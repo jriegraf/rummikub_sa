@@ -10,10 +10,9 @@ import play.api.libs.json.Json
 
 import scala.concurrent.duration._
 import scala.concurrent.Await
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 class PlayerRepository extends PlayerCrudRepository {
-
 
   val mongoClient: MongoClient = MongoClient()
   val database: MongoDatabase = mongoClient.getDatabase("rummikub")
@@ -24,8 +23,12 @@ class PlayerRepository extends PlayerCrudRepository {
     val doc = Document(Json.prettyPrint(Json.toJson(player))) + ("_id" -> id.toString)
     println("Create Player: ")
     println(doc.toJson())
-    Await.result(playerCollection.insertOne(doc).toFuture(), 2 seconds)
-    Success()
+    try {
+      Await.result(playerCollection.insertOne(doc).toFuture(), 2 seconds)
+      Success()
+    }catch {
+      case e : Throwable => Failure(e)
+    }
   }
 
   override def read(name: String): Option[Player] = {

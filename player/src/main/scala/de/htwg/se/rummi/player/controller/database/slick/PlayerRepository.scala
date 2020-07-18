@@ -33,13 +33,11 @@ class PlayerRepository extends PlayerCrudRepository {
     Await.result(f, 10 seconds)
   }
 
-
+  // Table definition
   class Players(tag: Tag) extends Table[Player](tag, "PLAYERS") {
-    def id = column[Long]("PLAYER_ID", O.PrimaryKey, O.AutoInc) // This is the primary key column
-
+    def id = column[Long]("PLAYER_ID", O.PrimaryKey, O.AutoInc)
     def name = column[String]("PLAYER_NAME", O.Unique)
 
-    // Every table needs a * projection with the same type as the table's type parameter
     def * = (name, id.?) <> ((Player.apply _).tupled, Player.unapply)
   }
 

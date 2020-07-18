@@ -91,16 +91,18 @@ object GameServiceApplication extends GameMarshaller {
             }
           }
         } ~
-        post {
-          service.getGameById(id) match {
-            case Failure(e) => complete(BadRequest, e.getMessage)
-            case Success(game) =>
-              entity(as[MoveTileMessage]) { message =>
-                service.moveTile(game, message.from, message.to, message.tile, message.newRow, message.newCol) match {
-                  case Failure(e) => complete(BadRequest, e.getMessage)
-                  case Success(game) => complete(HttpEntity(ContentTypes.`application/json`, Json.prettyPrint(Json.toJson(game))))
+        path("moveTile") {
+          post {
+            service.getGameById(id) match {
+              case Failure(e) => complete(BadRequest, e.getMessage)
+              case Success(game) =>
+                entity(as[MoveTileMessage]) { message =>
+                  service.moveTile(game, message.from, message.to, message.tile, message.newRow, message.newCol) match {
+                    case Failure(e) => complete(BadRequest, e.getMessage)
+                    case Success(game) => complete(HttpEntity(ContentTypes.`application/json`, Json.prettyPrint(Json.toJson(game))))
+                  }
                 }
-              }
+            }
           }
         } ~
         pathSingleSlash {
